@@ -1,4 +1,4 @@
-# my-virtual-store#
+# my-virtual-store
 
 Description:
 my-fake-store is a mock e-commerce application designed for learning and demonstration purposes. It simulates a basic online store environment where users can browse products, add items to their cart, and proceed to checkout. The application is built using modern web technologies and serves as a hands-on project to practice front-end and back-end development skills.
