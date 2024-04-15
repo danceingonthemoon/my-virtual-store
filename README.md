@@ -11,9 +11,12 @@ Checkout process with order summary and payment simulation.
 Responsive design for optimal viewing on various devices.
 Technologies Used:
 
-## Frontend: HTML, CSS, JavaScript, React
-## Backend: Node.js, Express, SQlight
-## Additional Tools: Git, GitHub, VS Code
+## Frontend:
+HTML, CSS, JavaScript, React
+## Backend:
+Node.js, Express, SQlight
+## Additional Tools:
+Git, GitHub, VS Code
 
 
 ## Installation:
