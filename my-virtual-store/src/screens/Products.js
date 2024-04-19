@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export const Categories = () => {
+export const Products = () => {
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch("https://fakestoreapi.com/products/categories");
+        // handle error
+        if (res.status !== 200) {
+          throw new Error("Failed to fetch categories");
+        }
         const data = await res.json();
         setCategories(data);
         console.log(data);
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log("Error fetching categories: ", error.message);
       }
     };
     fetchCategories();
@@ -21,11 +25,15 @@ export const Categories = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Categories</Text>
       <View style={styles.categories}>
-        {categories.map((category, index) => (
-          <Text key={index} style={styles.category}>
-            {category}
-          </Text>
-        ))}
+        {categories.length > 0 ? (
+          categories.map((category, index) => (
+            <Text key={index} style={styles.category}>
+              {category}
+            </Text>
+          ))
+        ) : (
+          <Text>Loading...</Text>
+        )}
       </View>
     </View>
   );
@@ -66,7 +74,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-
   category: {
     fontSize: 23,
     marginTop: 15,
