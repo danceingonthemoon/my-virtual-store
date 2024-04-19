@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export const Products = () => {
   const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -21,21 +25,35 @@ export const Products = () => {
     fetchCategories();
   }, []);
 
+  const handleCategoryPress = (category) => {
+    navigation.navigate("CategoryProducts", { category });
+    console.log(category);
+    console.log("playload", category.payload);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Categories</Text>
-      <View style={styles.categories}>
-        {categories.length > 0 ? (
-          categories.map((category, index) => (
-            <Text key={index} style={styles.category}>
-              {category}
-            </Text>
-          ))
-        ) : (
-          <Text>Loading...</Text>
-        )}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Categories</Text>
+        <View style={styles.categories}>
+          {categories.length > 0 ? (
+            categories.map((category, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.category}
+                onPress={() => handleCategoryPress(category)}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text>Loading...</Text>
+          )}
+        </View>
       </View>
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -73,12 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 20,
+    fontWeight: "bold",
   },
   category: {
-    fontSize: 23,
     marginTop: 15,
-    fontWeight: "bold",
-    height: 60,
+    height: 50,
     width: 330,
     backgroundColor: "lightgreen",
     justifyContent: "center",
@@ -86,7 +103,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
     marginBottom: 5,
-    borderRadius: 20,
+    borderRadius: 10,
     color: "blue",
   },
 });
