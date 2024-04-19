@@ -26,9 +26,8 @@ export const Products = () => {
   }, []);
 
   const handleCategoryPress = (category) => {
-    navigation.navigate("CategoryProducts", { category });
     console.log(category);
-    console.log("playload", category.payload);
+    navigation.navigate("CategoryProducts", { category: category });
   };
 
   return (
@@ -43,7 +42,9 @@ export const Products = () => {
                 style={styles.category}
                 onPress={() => handleCategoryPress(category)}
               >
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                <Text
+                  style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}
+                >
                   {category}
                 </Text>
               </TouchableOpacity>
@@ -69,12 +70,11 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 30,
     fontWeight: "bold",
-    width: 350,
-    height: 60,
+    width: "99%",
+    height: "10%",
     backgroundColor: "orange",
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 10,
     padding: 10,
     borderRadius: 10,
     color: "white",
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    padding: 10,
+    borderColor: "black",
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 20,
@@ -98,12 +98,15 @@ const styles = StyleSheet.create({
     height: 50,
     width: 330,
     backgroundColor: "lightgreen",
+
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
     padding: 10,
     marginBottom: 5,
     borderRadius: 10,
-    color: "blue",
+
+    borderColor: "black",
+    borderWidth: 1,
   },
 });
