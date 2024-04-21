@@ -1,3 +1,0 @@
-Name: Tom Sawyer
-Age: 10
-Hobby: Eating, Adventure
