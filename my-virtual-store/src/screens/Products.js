@@ -37,17 +37,18 @@ export const Products = () => {
         <View style={styles.categories}>
           {categories.length > 0 ? (
             categories.map((category, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.category}
-                onPress={() => handleCategoryPress(category)}
-              >
-                <Text
-                  style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}
+              <View key={category} style={styles.category}>
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleCategoryPress(category)}
                 >
-                  {category}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}
+                  >
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             ))
           ) : (
             <Text>Loading...</Text>
@@ -80,28 +81,26 @@ const styles = StyleSheet.create({
   },
   categories: {
     flex: 1,
-    // display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
+    width: "100%",
+    flexDirection: "column",
+    justifyContent: "flex-start",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 20,
     fontWeight: "bold",
   },
   category: {
-    marginTop: 15,
+    marginTop: 10,
+    margin: 10,
+    width: 350,
     height: 50,
-    width: 330,
     backgroundColor: "lightgreen",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
     padding: 10,
-    marginBottom: 5,
     borderRadius: 10,
     borderColor: "black",
     borderWidth: 1,
