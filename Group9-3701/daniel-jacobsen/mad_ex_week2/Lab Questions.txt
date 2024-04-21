@@ -1,0 +1,23 @@
+Q1. What's one of the main roles of the built-in <View> component?
+    b.	Structure/ Group other child components. 
+
+Q2. Can you use HTML elements (e.g. <div>, <p>, <input>) in React Native apps?
+    c.	No, React Native doesn’t recognize these components – it doesn’t know how to compile them to native views.
+
+Q3, What’s the relation between React Native component styling and CSS (Cascading Style Sheets) for the Web?
+    a.	React Native styling is inspired by CSS (comparable/ similar property names and values)
+
+Q4, Which of the following example style rules does NOT work in React Native?
+    c.	‘background-color’: ‘#ccc’
+
+Q5, Why would you use const styles = StyleSheet.create({}) instead of a regular JavaScript object (const styles = {})?
+    b.	Using a StyleSheet adds validation and potential performance improvements.
+
+Q6, What is “Flexbox”? 
+    c.	A concept/ set of styling properties that allows you to structure content (i.e. create layouts).
+
+Q7, What's the default styling/ layout behavior of a <View> component?
+    c.	It uses Flexbox to organize its child components.
+
+Q8, If a <View> has flexDirection: 'column' (which is the default) - what does alignItems: 'flex-end' do in that case?
+    a.	It positions all child elements at the end of the column – on the horizontal axis.
