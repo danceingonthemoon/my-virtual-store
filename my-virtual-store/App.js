@@ -23,7 +23,7 @@ export default function App() {
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
-          options={{ headerShown: false }}
+          options={{ title: "Product Details" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

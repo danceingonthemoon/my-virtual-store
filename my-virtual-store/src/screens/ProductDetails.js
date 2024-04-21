@@ -22,10 +22,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   heading: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: "bold",
-    width: 350,
-    height: 60,
+    width: "100%",
+    height: "8%",
     backgroundColor: "orange",
     textAlign: "center",
     fontWeight: "bold",
