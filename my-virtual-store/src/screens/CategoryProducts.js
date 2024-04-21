@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, Button } from "react-native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export const CategoryProducts = ({ route }) => {
   const { category } = route?.params;
@@ -74,7 +75,10 @@ export const CategoryProducts = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>{category}</Text>
-      {/* <View style={styles.products}>
+
+      {
+        //one way to show it
+        /* <View style={styles.products}>
         {products.length > 0 ? (
           products.map((product, index) => (
             <TouchableOpacity
@@ -112,14 +116,28 @@ export const CategoryProducts = ({ route }) => {
         ) : (
           <Text>Loading...</Text>
         )}
-      </View> */}
-
+      </View> */
+      }
       <FlatList
         data={products}
         renderItem={renderItem}
         keyExtractor={(product) => product.id}
         extraData={selectedId}
       />
+      <View style={styles.buttonBox}>
+        <View style={styles.iconBox}>
+          <Icon name="close" size={15} color="blue" />
+        </View>
+        <Button
+          title="Back"
+          onPress={() => navigation.goBack()}
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "black",
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -146,7 +164,6 @@ const styles = StyleSheet.create({
   products: {
     flex: 1,
     height: 100,
-
     padding: 5,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -169,7 +186,6 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-
     marginRight: 5,
   },
   title: {
@@ -194,5 +210,23 @@ const styles = StyleSheet.create({
   titleWrapper: {
     alignItems: "flex-end",
     flexDirection: "column",
+  },
+  buttonBox: {
+    flexDirection: "row",
+    padding: 5,
+    width: "30%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: "orange",
+    marginBottom: 10,
+  },
+  iconBox: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 3,
+    backgroundColor: "lightblue",
   },
 });
