@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image, Button } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 export const ProductDetails = () => {
   //?? useState to null or []??
@@ -33,7 +34,20 @@ export const ProductDetails = () => {
     fetchProduct();
   }, [productId]);
 
-  if (!product) return <Text>Loading ...</Text>;
+  if (!product)
+    return (
+      <Text
+        style={{
+          fontSize: 30,
+          color: "black",
+          flexDirection: "row",
+          padding: 35,
+          justifyContent: "center",
+        }}
+      >
+        Loading ...
+      </Text>
+    );
 
   return (
     <View style={styles.container}>
@@ -42,23 +56,47 @@ export const ProductDetails = () => {
         <Image source={{ uri: product.image }} style={styles.image} />
         <Text style={styles.title}>{product.title}</Text>
         <View style={styles.box}>
-          <Text style={styles.letter}>Rate : ${product.rating.rate}</Text>
+          <Text style={styles.letter}>Rate : {product.rating.rate}</Text>
           <Text style={styles.letter}>Count: ${product.rating.count}</Text>
           <Text style={styles.letter}>Price: ${product.price}</Text>
         </View>
-        <View style={styles.buttonBox}>
-          <View style={styles.iconBox}>
-            <Icon name="close" size={15} color="blue" />
+        <View style={styles.buttonContainer}>
+          <View style={styles.buttonBox}>
+            <View style={styles.iconBox}>
+              <Icon name="close" size={13} color="blue" />
+            </View>
+            <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
+              <Text
+                style={{
+                  fontSize: 19,
+                  fontWeight: "bold",
+                  color: "green",
+                }}
+              >
+                Back
+              </Text>
+            </TouchableOpacity>
           </View>
-          <Button
-            title="Back"
-            onPress={() => navigation.goBack()}
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              color: "black",
-            }}
-          />
+
+          <View style={styles.buttonBox}>
+            <View style={styles.iconBox}>
+              <Icon name="close" size={13} color="blue" />
+            </View>
+            <TouchableOpacity
+              title="Add To Cart"
+              onPress={() => navigation.goBack()}
+            >
+              <Text
+                style={{
+                  fontSize: 19,
+                  fontWeight: "bold",
+                  color: "green",
+                }}
+              >
+                Add To Cart
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={{ flex: 1, textAlign: "center", padding: 5 }}>
           <Text
@@ -130,7 +168,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     color: "black",
     margin: 5,
@@ -143,7 +181,7 @@ const styles = StyleSheet.create({
   },
   box: {
     flexDirection: "row",
-    width: "95%",
+    width: "98%",
     margin: 8,
     padding: 8,
     backgroundColor: "lightgreen",
@@ -151,9 +189,35 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   letter: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "bold",
     color: "black",
     margin: 5,
+  },
+  iconBox: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 5,
+    margin: 8,
+    backgroundColor: "lightgreen",
+  },
+  buttonBox: {
+    flexDirection: "row",
+    // padding: 5,
+    width: "45%",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 25,
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 13,
+    backgroundColor: "orange",
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
   },
 });

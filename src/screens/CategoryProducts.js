@@ -60,8 +60,8 @@ export const CategoryProducts = ({ route }) => {
   );
   // functional component to render each product
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "white" : "#f9c2ff";
-    const color = item.id === selectedId ? "blue" : "black";
+    const backgroundColor = item.id === selectedId ? "blue" : "#f9c2ff";
+    const color = item.id === selectedId ? "green" : "black";
 
     return (
       <Product
@@ -130,17 +130,19 @@ export const CategoryProducts = ({ route }) => {
       )}
       <View style={styles.buttonBox}>
         <View style={styles.iconBox}>
-          <Icon name="close" size={15} color="blue" />
+          <Icon name="close" size={14} />
         </View>
-        <Button
-          title="Back"
-          onPress={() => navigation.goBack()}
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            color: "black",
-          }}
-        />
+        <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "green",
+            }}
+          >
+            Back
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -164,6 +166,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     color: "white",
+    borderRadius: 5,
   },
   products: {
     flex: 1,
@@ -222,15 +225,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
+
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 20,
     backgroundColor: "orange",
     marginBottom: 10,
   },
   iconBox: {
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 3,
-    backgroundColor: "lightblue",
+    borderRadius: 20,
+    padding: 5,
+    margin: 7,
+    backgroundColor: "lightgreen",
   },
 });
