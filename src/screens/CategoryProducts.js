@@ -37,7 +37,7 @@ export const CategoryProducts = ({ route }) => {
   }, [category]);
 
   const handleProductPress = (product) => {
-    navigation.navigate("ProductDetails", { product });
+    navigation.navigate("ProductDetails", { productId: product.id });
   };
 
   const Product = ({ item, onPress, backgroundColor, textColor }) => (
@@ -118,12 +118,16 @@ export const CategoryProducts = ({ route }) => {
         )}
       </View> */
       }
-      <FlatList
-        data={products}
-        renderItem={renderItem}
-        keyExtractor={(product) => product.id}
-        extraData={selectedId}
-      />
+      {products.length > 0 ? (
+        <FlatList
+          data={products}
+          renderItem={renderItem}
+          keyExtractor={(product) => product.id}
+          extraData={selectedId}
+        />
+      ) : (
+        <Text>Loading...</Text>
+      )}
       <View style={styles.buttonBox}>
         <View style={styles.iconBox}>
           <Icon name="close" size={15} color="blue" />
