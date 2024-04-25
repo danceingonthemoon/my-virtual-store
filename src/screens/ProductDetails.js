@@ -57,8 +57,8 @@ export const ProductDetails = () => {
         <Text style={styles.title}>{product.title}</Text>
         <View style={styles.box}>
           <Text style={styles.letter}>Rate : {product.rating.rate}</Text>
-          <Text style={styles.letter}>Count: ${product.rating.count}</Text>
-          <Text style={styles.letter}>Price: ${product.price}</Text>
+          <Text style={styles.letter}>Count : {product.rating.count}</Text>
+          <Text style={styles.letter}>Price : ${product.price}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <View style={styles.buttonBox}>
