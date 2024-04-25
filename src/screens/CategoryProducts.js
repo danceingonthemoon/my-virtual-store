@@ -8,7 +8,6 @@ export const CategoryProducts = ({ route }) => {
   const { category } = route?.params;
   const [products, setProducts] = useState([]);
   const navigation = useNavigation();
-  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -40,11 +39,8 @@ export const CategoryProducts = ({ route }) => {
     navigation.navigate("ProductDetails", { productId: product.id });
   };
 
-  const Product = ({ item, onPress, backgroundColor, textColor }) => (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{ backgroundColor: "lightgrey" }}
-    >
+  const Product = ({ item, onPress }) => (
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.products}>
         <View style={styles.product}>
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
@@ -60,17 +56,7 @@ export const CategoryProducts = ({ route }) => {
   );
   // functional component to render each product
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "blue" : "#f9c2ff";
-    const color = item.id === selectedId ? "green" : "black";
-
-    return (
-      <Product
-        item={item}
-        onPress={() => handleProductPress(item)}
-        backgroundColor={backgroundColor}
-        textColor={color}
-      />
-    );
+    return <Product item={item} onPress={() => handleProductPress(item)} />;
   };
   return (
     <View style={styles.container}>
@@ -123,7 +109,6 @@ export const CategoryProducts = ({ route }) => {
           data={products}
           renderItem={renderItem}
           keyExtractor={(product) => product.id}
-          extraData={selectedId}
         />
       ) : (
         <Text>Loading...</Text>

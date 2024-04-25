@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { View, Text, StyleSheet, Image, Button } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useDispatch } from "react-redux";
+
+//?? What is the purpose of the useEffect hook??
+//The useEffect hook is used to perform side effects in function components.
+// It is similar to componentDidMount, componentDidUpdate, and componentWillUnmount in class components.
+// It takes two arguments: a function that contains the side effect, and an optional array of dependencies.
+// The function is called after the component has rendered, and it is called after every render by default.
 export const ProductDetails = () => {
   //?? useState to null or []??
   //null is better because it's more explicit that the data is not available yet
@@ -11,6 +18,13 @@ export const ProductDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
+  const dispath = useDispatch();
+
+  // handle add to cart button
+  const handleAddToCart = () => {
+    dispath({ type: "ADD_TO_CART", payload: product });
+    navigation.navigate("ShoppingCart");
+  };
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
@@ -77,14 +91,13 @@ export const ProductDetails = () => {
               </Text>
             </TouchableOpacity>
           </View>
-
           <View style={styles.buttonBox}>
             <View style={styles.iconBox}>
               <Icon name="close" size={13} color="blue" />
             </View>
             <TouchableOpacity
               title="Add To Cart"
-              onPress={() => navigation.goBack()}
+              onPress={() => handleAddToCart()}
             >
               <Text
                 style={{
@@ -137,9 +150,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-
     backgroundColor: "white",
-    borderRadius: 10,
   },
   heading: {
     fontSize: 25,
@@ -152,7 +163,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 10,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 15,
     color: "white",
   },
   cart: {
