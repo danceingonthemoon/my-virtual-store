@@ -16,7 +16,6 @@ export const Products = () => {
           throw new Error("Failed to fetch categories");
         }
         const data = await res.json();
-        console.log(data);
         const formattedCategories = data.map((category) =>
           category.replace(
             /\b\w+('s)?\b/g,
@@ -33,7 +32,9 @@ export const Products = () => {
   }, []);
 
   const handleCategoryPress = (category) => {
-    navigation.navigate("CategoryProducts", { category: category });
+    navigation.navigate("CategoryProducts", {
+      category: category.toLowerCase(),
+    });
   };
 
   return (

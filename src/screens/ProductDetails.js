@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image, Button } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 export const ProductDetails = () => {
   //?? useState to null or []??
@@ -108,23 +108,25 @@ export const ProductDetails = () => {
           >
             Description:
           </Text>
-          <View>
-            <Text
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                borderWidth: 1,
-                margin: 5,
-                height: "90%",
-                fontSize: 18,
-                // width: "auto",
-                backgroundColor: "lightgrey",
-              }}
-            >
-              {product.description}
-            </Text>
-          </View>
+          <ScrollView>
+            <View>
+              <Text
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  margin: 5,
+                  height: "90%",
+                  fontSize: 18,
+                  // width: "auto",
+                  backgroundColor: "lightgrey",
+                }}
+              >
+                {product.description}
+              </Text>
+            </View>
+          </ScrollView>
         </View>
       </View>
     </View>
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   },
   cart: {
     flex: 1,
-    width: "97%",
+    width: "98%",
     // height: 300,
     // backgroundColor: "lightgrey",
     justifyContent: "center",
@@ -168,10 +170,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 25,
+    marginRight: 5,
     fontWeight: "bold",
     color: "black",
-    margin: 5,
   },
   image: {
     width: "100%",

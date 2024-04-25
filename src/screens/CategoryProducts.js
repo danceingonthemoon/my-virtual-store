@@ -9,6 +9,7 @@ export const CategoryProducts = ({ route }) => {
   const [products, setProducts] = useState([]);
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -22,15 +23,16 @@ export const CategoryProducts = ({ route }) => {
           throw new Error("Failed to fetch products");
         }
         const data = await res.json();
-        setProducts(data);
-        // console.log(data);
+
         const productsImages = data.map((product) => ({
           ...product,
           imageUrl: product.image,
         }));
         setProducts(productsImages);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error fetching products: ", error.message);
+        setIsLoading(false);
       }
     };
     fetchProducts();
@@ -40,17 +42,14 @@ export const CategoryProducts = ({ route }) => {
     navigation.navigate("ProductDetails", { productId: product.id });
   };
 
-  const Product = ({ item, onPress, backgroundColor, textColor }) => (
-    <TouchableOpacity
-      onPress={onPress}
-      style={{ backgroundColor: "lightgrey" }}
-    >
-      <View style={styles.products}>
+  const Product = ({ item, onPress, backgroundColor, color }) => (
+    <TouchableOpacity onPress={onPress} style={{ backgroundColor }}>
+      <View style={[styles.products, { backgroundColor: color }]}>
         <View style={styles.product}>
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
           <View style={styles.productInfo}>
             <View sstyle={styles.titleWrapper}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={[styles.title, { color }]}>{item.title}</Text>
               <Text style={styles.price}>${item.price}</Text>
             </View>
           </View>
@@ -60,8 +59,8 @@ export const CategoryProducts = ({ route }) => {
   );
   // functional component to render each product
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "blue" : "#f9c2ff";
-    const color = item.id === selectedId ? "green" : "black";
+    const backgroundColor = item.id === selectedId ? "lightgreen" : "white";
+    const color = item.id === selectedId ? "white" : "lightgreen";
 
     return (
       <Product
@@ -75,8 +74,9 @@ export const CategoryProducts = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>{category}</Text>
-
-      {
+      {isLoading ? (
+        <Text>Loading...</Text>
+      ) : (
         //one way to show it
         /* <View style={styles.products}>
         {products.length > 0 ? (
@@ -117,16 +117,12 @@ export const CategoryProducts = ({ route }) => {
           <Text>Loading...</Text>
         )}
       </View> */
-      }
-      {products.length > 0 ? (
         <FlatList
           data={products}
           renderItem={renderItem}
           keyExtractor={(product) => product.id}
           extraData={selectedId}
         />
-      ) : (
-        <Text>Loading...</Text>
       )}
       <View style={styles.buttonBox}>
         <View style={styles.iconBox}>
