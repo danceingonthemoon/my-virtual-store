@@ -16,8 +16,15 @@ export const Products = () => {
           throw new Error("Failed to fetch categories");
         }
         const data = await res.json();
-        setCategories(data);
         console.log(data);
+        const formattedCategories = data.map((category) =>
+          category.replace(
+            /\b\w+('s)?\b/g,
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          )
+        );
+        setCategories(formattedCategories);
+        console.log("formattedCategories", formattedCategories);
       } catch (error) {
         console.log("Error fetching categories: ", error.message);
       }
@@ -26,7 +33,6 @@ export const Products = () => {
   }, []);
 
   const handleCategoryPress = (category) => {
-    console.log(category);
     navigation.navigate("CategoryProducts", { category: category });
   };
 
@@ -43,7 +49,7 @@ export const Products = () => {
                   onPress={() => handleCategoryPress(category)}
                 >
                   <Text
-                    style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}
+                    style={{ fontSize: 27, fontWeight: "bold", color: "blue" }}
                   >
                     {category}
                   </Text>
@@ -96,7 +102,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     margin: 10,
     width: "93%",
-    height: "8%",
+    height: "9%",
     backgroundColor: "lightgreen",
     justifyContent: "center",
     alignItems: "center",
