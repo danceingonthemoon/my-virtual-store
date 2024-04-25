@@ -9,68 +9,72 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 export const ShoppingCart = () => {
   // TODO: write a function to display all of the items in the cart
-
   const cartItems = useSelector((state) => state.cart.cart); //?? not state.cart
-
   const cartItemsArray = Object.values(cartItems);
   console.log("cartItemsArray", cartItemsArray);
+  let total = 0;
+  for (let i = 0; i < cartItemsArray.length; i++) {
+    const price = parseFloat(cartItemsArray[i].price);
+    if (!isNaN(price)) {
+      total += price;
+    }
+  }
 
-  const jasonCartItems = JSON.stringify(cartItemsArray);
-  const total = cartItemsArray.reduce(
-    (acc, item) => Math.round(acc + item.price),
-    0
-  );
+  const roundedTotal = Math.round(total * 100) / 100;
   console.log("total", total);
 
+  // const quantity = cartItemsArray.reduce((acc, item) => acc + item.quantity, 0);
+  // console.log("quantity", quantity);
   // TODO: ShoppingCart show how many items in the cart on the tab bar
   // TODO: Add a button to add items also show the total price of the cart
+  // TODO: Show items in the cart when the user exits the app and comes back
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Text style={styles.heading}>Shopping Cart</Text>
-        <View style={styles.cart}>
-          <View style={styles.top}>
-            <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-              Items : {cartItemsArray.length}
-            </Text>
-            <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-              Total Price : ${total}
-            </Text>
-          </View>
+    <View style={styles.container}>
+      <Text style={styles.heading}>Shopping Cart</Text>
+      <View style={styles.cart}>
+        <View style={styles.top}>
+          <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
+            Items : {cartItemsArray.length}
+          </Text>
+          <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
+            Total Price : ${roundedTotal}
+          </Text>
+        </View>
 
-          <View style={styles.products}>
-            {cartItemsArray.map((item) => (
-              <View style={styles.product}>
-                <Image source={{ uri: item.image }} style={styles.image} />
-                <View style={styles.productInfo}>
-                  <ScrollView>
-                    <Text style={styles.title}>{item.title}</Text>
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "space-between",
-                        marginTop: 15,
-                        flexDirection: "row",
-                        paddingHorizontal: 5,
-                      }}
-                    >
-                      <TouchableOpacity>
-                        <Icon name="minus-circle" size={18} color="blue" />
-                      </TouchableOpacity>
-                      <Text style={styles.quantity}> quantity : {}</Text>
-                      <TouchableOpacity>
-                        <Icon name="plus-circle" size={18} color="green" />
-                      </TouchableOpacity>
-                    </View>
-                  </ScrollView>
-                </View>
+        <View style={styles.products}>
+          {cartItemsArray.map((item, index) => (
+            <View style={styles.product} key={index}>
+              <Image source={{ uri: item.image }} style={styles.image} />
+              <View style={styles.productInfo}>
+                <ScrollView>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "space-between",
+                      marginTop: 15,
+                      flexDirection: "row",
+                      paddingHorizontal: 5,
+                    }}
+                  >
+                    <TouchableOpacity>
+                      <Icon name="minus-circle" size={18} color="blue" />
+                    </TouchableOpacity>
+                    <Text style={styles.quantity}>
+                      quantity:{item.quantity}
+                    </Text>
+                    <TouchableOpacity>
+                      <Icon name="plus-circle" size={18} color="green" />
+                    </TouchableOpacity>
+                  </View>
+                </ScrollView>
               </View>
-            ))}
-          </View>
+            </View>
+          ))}
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -87,6 +91,8 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 15,
     backgroundColor: "white",
+    height: "96%",
+    width: "100%",
     borderRadius: 10,
   },
   heading: {
@@ -116,18 +122,17 @@ const styles = StyleSheet.create({
     height: "100%",
     padding: 5,
     // flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
 
-    alignItems: "center",
+    alignItems: "stretch",
   },
   product: {
     flexDirection: "row",
-    marginTop: 2,
+    marginTop: 5,
     alignItems: "center",
-    // marginVertical: 5,
+    marginVertical: 10,
     width: "97%",
     height: "18%",
-
     justifyContent: "center",
     // backgroundColor: "#f9f9f9",
     borderRadius: 10,
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     // paddingHorizontal: 5,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   titleWrapper: {
@@ -188,4 +193,9 @@ const styles = StyleSheet.create({
     width: "98%",
     backgroundColor: "green",
   },
+  // quantity: {
+  //   fontSize: 16,
+  //   fontWeight: "bold",
+  //   color: "black",
+  // },
 });
