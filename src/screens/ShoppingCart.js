@@ -16,62 +16,61 @@ export const ShoppingCart = () => {
   console.log("cartItemsArray", cartItemsArray);
 
   const jasonCartItems = JSON.stringify(cartItemsArray);
-  const total = cartItemsArray.reduce((acc, item) => acc + item.price, 0);
+  const total = cartItemsArray.reduce(
+    (acc, item) => Math.round(acc + item.price),
+    0
+  );
   console.log("total", total);
 
   // TODO: ShoppingCart show how many items in the cart on the tab bar
   // TODO: Add a button to add items also show the total price of the cart
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Shopping Cart</Text>
-      <View style={styles.cart}>
-        <View
-          styel={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            width: "100%",
-            height: "10%",
-            backgroundColor: "orange",
-          }}
-        >
-          <Text>Total Price :${total}</Text>
-          <Text>Items :{cartItemsArray.length}</Text>
-        </View>
-
-        {cartItemsArray.map((item) => (
-          <View style={styles.products}>
-            <View style={styles.product}>
-              <Image source={{ uri: item.image }} style={styles.image} />
-              <View style={styles.productInfo}>
-                <ScrollView>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "space-between",
-                      marginTop: 15,
-                      flexDirection: "row",
-                      paddingHorizontal: 15,
-                    }}
-                  >
-                    <TouchableOpacity>
-                      <Icon name="minus-circle" size={18} color="blue" />
-                    </TouchableOpacity>
-                    <Text style={styles.quantity}> quantity : {}</Text>
-                    <TouchableOpacity>
-                      <Icon name="plus-circle" size={18} color="green" />
-                    </TouchableOpacity>
-                  </View>
-                </ScrollView>
-              </View>
-            </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Shopping Cart</Text>
+        <View style={styles.cart}>
+          <View style={styles.top}>
+            <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
+              Items : {cartItemsArray.length}
+            </Text>
+            <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
+              Total Price : ${total}
+            </Text>
           </View>
-        ))}
+
+          <View style={styles.products}>
+            {cartItemsArray.map((item) => (
+              <View style={styles.product}>
+                <Image source={{ uri: item.image }} style={styles.image} />
+                <View style={styles.productInfo}>
+                  <ScrollView>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "space-between",
+                        marginTop: 15,
+                        flexDirection: "row",
+                        paddingHorizontal: 5,
+                      }}
+                    >
+                      <TouchableOpacity>
+                        <Icon name="minus-circle" size={18} color="blue" />
+                      </TouchableOpacity>
+                      <Text style={styles.quantity}> quantity : {}</Text>
+                      <TouchableOpacity>
+                        <Icon name="plus-circle" size={18} color="green" />
+                      </TouchableOpacity>
+                    </View>
+                  </ScrollView>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -93,20 +92,20 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 28,
     fontWeight: "bold",
-    width: "100%",
+    width: "98%",
     height: "7%",
     backgroundColor: "orange",
     textAlign: "center",
     fontWeight: "bold",
     padding: 8,
     marginBottom: 5,
-    borderRadius: 20,
     color: "white",
+    borderRadius: 10,
   },
   cart: {
     flex: 1,
-    width: "98%",
-    height: "98%",
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     padding: 5,
-    flexDirection: "row",
+    // flexDirection: "row",
     justifyContent: "space-between",
 
     alignItems: "center",
@@ -126,9 +125,9 @@ const styles = StyleSheet.create({
     marginTop: 2,
     alignItems: "center",
     // marginVertical: 5,
-    width: "100%",
-    height: "100%",
-    flexDirection: "row",
+    width: "97%",
+    height: "18%",
+
     justifyContent: "center",
     // backgroundColor: "#f9f9f9",
     borderRadius: 10,
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
   image: {
     width: "30%",
     height: "90%",
-    marginRight: 10,
+    marginRight: 20,
     borderWidth: 1,
     borderRadius: 10,
   },
@@ -146,6 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     // fontWeight: "bold",
     color: "black",
+    marginTop: 3,
   },
   productInfo: {
     flex: 1,
@@ -176,5 +176,16 @@ const styles = StyleSheet.create({
 
     fontWeight: "bold",
     color: "black",
+  },
+  top: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    padding: 10,
+    margin: 5,
+    borderWidth: 1,
+    borderRadius: 10,
+    width: "98%",
+    backgroundColor: "green",
   },
 });
