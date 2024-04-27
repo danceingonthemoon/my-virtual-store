@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 export const Products = () => {
   const [categories, setCategories] = useState([]);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -17,7 +18,7 @@ export const Products = () => {
         }
         const data = await res.json();
         setCategories(data);
-        console.log(data);
+        setLoading(false);
       } catch (error) {
         console.log("Error fetching categories: ", error.message);
       }
@@ -26,7 +27,6 @@ export const Products = () => {
   }, []);
 
   const handleCategoryPress = (category) => {
-    console.log(category);
     navigation.navigate("CategoryProducts", { category: category });
   };
 
@@ -34,26 +34,31 @@ export const Products = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.heading}>Categories</Text>
-        <View style={styles.categories}>
-          {categories.length > 0 ? (
-            categories.map((category, index) => (
-              <View key={category} style={styles.category}>
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleCategoryPress(category)}
-                >
-                  <Text
-                    style={{ fontSize: 20, fontWeight: "bold", color: "blue" }}
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          <View style={styles.categories}>
+            {categories.map((category, index) => {
+              return (
+                <View key={`${category}-${index}`} style={styles.category}>
+                  <TouchableOpacity
+                    onPress={() => handleCategoryPress(category)}
                   >
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ))
-          ) : (
-            <Text>Loading...</Text>
-          )}
-        </View>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: "bold",
+                        color: "blue",
+                      }}
+                    >
+                      {category}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </View>
+        )}
       </View>
     </GestureHandlerRootView>
   );

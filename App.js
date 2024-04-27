@@ -9,6 +9,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 import store from "./src/stores/store";
 import React from "react";
+
 const Stack = createStackNavigator();
 
 export default function App() {
