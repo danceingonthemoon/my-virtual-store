@@ -1,19 +1,16 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { INCREASE_COUNT, DECREASE_COUNT } from "../stores/actionTypes";
 import { connect } from "react-redux";
 import { Image } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { decreaseCount, increaseCount } from "../stores/cartActions";
 
 export const ShoppingCart = () => {
   // TODO: write a function to display all of the items in the cart
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cart);
-  const count = useSelector((state) => state.counter);
-  console.log("count", count);
+
   const cartItemsArray = Object.values(cartItems);
   console.log("cartItemsArray", cartItemsArray);
 
@@ -68,11 +65,13 @@ export const ShoppingCart = () => {
                       paddingHorizontal: 5,
                     }}
                   >
-                    <TouchableOpacity onPress={()=>handleDecrease()}>
+                    <TouchableOpacity>
                       <Icon name="minus-circle" size={18} color="blue" />
                     </TouchableOpacity>
-                    <Text style={styles.quantity}>quantity:{count}</Text>
-                    <TouchableOpacity onPress={()=>handleIncrease()}>
+                    <Text style={styles.quantity}>
+                      quantity:{item.quantity}
+                    </Text>
+                    <TouchableOpacity>
                       <Icon name="plus-circle" size={18} color="green" />
                     </TouchableOpacity>
                   </View>

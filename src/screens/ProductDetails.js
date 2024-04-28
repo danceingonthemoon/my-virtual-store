@@ -46,7 +46,7 @@ export const ProductDetails = () => {
       }
     };
     fetchProduct();
-  }, [productId]);
+  }, []);
 
   if (!product)
     return (
