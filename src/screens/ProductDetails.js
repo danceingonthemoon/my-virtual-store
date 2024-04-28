@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { View, Text, StyleSheet, Image, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Button,
+  ActivityIndicator,
+} from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
+
 export const ProductDetails = () => {
   //?? useState to null or []??
   //null is better because it's more explicit that the data is not available yet
@@ -11,6 +19,7 @@ export const ProductDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchProduct = async () => {
       if (!productId) {
@@ -27,108 +36,101 @@ export const ProductDetails = () => {
         }
         const data = await res.json();
         setProduct(data);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error fetching products: ", error.message);
       }
     };
     fetchProduct();
-  }, [productId]);
-
-  if (!product)
-    return (
-      <Text
-        style={{
-          fontSize: 30,
-          color: "black",
-          flexDirection: "row",
-          padding: 35,
-          justifyContent: "center",
-        }}
-      >
-        Loading ...
-      </Text>
-    );
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Product Details</Text>
-      <View style={styles.cart}>
-        <Image source={{ uri: product.image }} style={styles.image} />
-        <Text style={styles.title}>{product.title}</Text>
-        <View style={styles.box}>
-          <Text style={styles.letter}>Rate : {product.rating.rate}</Text>
-          <Text style={styles.letter}>Count : {product.rating.count}</Text>
-          <Text style={styles.letter}>Price : ${product.price}</Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <View style={styles.buttonBox}>
-            <View style={styles.iconBox}>
-              <Icon name="close" size={13} color="blue" />
-            </View>
-            <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
-              <Text
-                style={{
-                  fontSize: 19,
-                  fontWeight: "bold",
-                  color: "green",
-                }}
-              >
-                Back
-              </Text>
-            </TouchableOpacity>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <View style={styles.cart}>
+          <Image source={{ uri: product.image }} style={styles.image} />
+          <Text style={styles.title}>{product.title}</Text>
+          <View style={styles.box}>
+            <Text style={styles.letter}>Rate : {product.rating.rate}</Text>
+            <Text style={styles.letter}>Count : {product.rating.count}</Text>
+            <Text style={styles.letter}>Price : ${product.price}</Text>
           </View>
+          <View style={styles.buttonContainer}>
+            <View style={styles.buttonBox}>
+              <View style={styles.iconBox}>
+                <Icon name="close" size={13} color="blue" />
+              </View>
+              <TouchableOpacity
+                title="Back"
+                onPress={() => navigation.goBack()}
+              >
+                <Text
+                  style={{
+                    fontSize: 19,
+                    fontWeight: "bold",
+                    color: "green",
+                  }}
+                >
+                  Back
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-          <View style={styles.buttonBox}>
-            <View style={styles.iconBox}>
-              <Icon name="close" size={13} color="blue" />
-            </View>
-            <TouchableOpacity
-              title="Add To Cart"
-              onPress={() => navigation.goBack()}
-            >
-              <Text
-                style={{
-                  fontSize: 19,
-                  fontWeight: "bold",
-                  color: "green",
-                }}
+            <View style={styles.buttonBox}>
+              <View style={styles.iconBox}>
+                <Icon name="close" size={13} color="blue" />
+              </View>
+              <TouchableOpacity
+                title="Add To Cart"
+                onPress={() => navigation.goBack()}
               >
-                Add To Cart
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 19,
+                    fontWeight: "bold",
+                    color: "green",
+                  }}
+                >
+                  Add To Cart
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{ flex: 1, textAlign: "center", padding: 5 }}>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 20,
+                justifyContent: "space-between",
+              }}
+            >
+              Description:
+            </Text>
+            <ScrollView>
+              <View>
+                <Text
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    borderWidth: 1,
+                    margin: 5,
+                    height: "90%",
+                    fontSize: 18,
+                    // width: "auto",
+                    backgroundColor: "lightgrey",
+                  }}
+                >
+                  {product.description}
+                </Text>
+              </View>
+            </ScrollView>
           </View>
         </View>
-        <View style={{ flex: 1, textAlign: "center", padding: 5 }}>
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 20,
-              justifyContent: "space-between",
-            }}
-          >
-            Description:
-          </Text>
-          <ScrollView>
-            <View>
-              <Text
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderWidth: 1,
-                  margin: 5,
-                  height: "90%",
-                  fontSize: 18,
-                  // width: "auto",
-                  backgroundColor: "lightgrey",
-                }}
-              >
-                {product.description}
-              </Text>
-            </View>
-          </ScrollView>
-        </View>
-      </View>
+      )}
     </View>
   );
 };
