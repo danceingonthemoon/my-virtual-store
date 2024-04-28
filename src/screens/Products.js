@@ -3,9 +3,11 @@ import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ActivityIndicator } from "react-native";
 
 export const Products = () => {
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   useEffect(() => {
     const fetchCategories = async () => {
@@ -24,6 +26,7 @@ export const Products = () => {
         );
         setCategories(formattedCategories);
         console.log("formattedCategories", formattedCategories);
+        setLoading(false);
       } catch (error) {
         console.log("Error fetching categories: ", error.message);
       }
@@ -42,7 +45,9 @@ export const Products = () => {
       <View style={styles.container}>
         <Text style={styles.heading}>Categories</Text>
         <View style={styles.categories}>
-          {categories.length > 0 ? (
+          {loading ? (
+            <ActivityIndicator size="large" color="blue" />
+          ) : categories.length ? (
             categories.map((category, index) => (
               <View key={category} style={styles.category}>
                 <TouchableOpacity
@@ -58,7 +63,7 @@ export const Products = () => {
               </View>
             ))
           ) : (
-            <Text>Loading...</Text>
+            <Text>No data found.</Text>
           )}
         </View>
       </View>

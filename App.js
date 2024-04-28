@@ -18,7 +18,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         {/* <Stack.Screen name="Products" component={Products} /> */}
-        <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
+        <Stack.Screen
+          name="CategoryProducts"
+          component={CategoryProducts}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
@@ -32,8 +36,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 20,
   },
 });

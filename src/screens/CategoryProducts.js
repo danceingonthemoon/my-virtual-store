@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, Button } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import {
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
-
+import { ActivityIndicator } from "react-native";
 export const CategoryProducts = ({ route }) => {
   const { category } = route?.params;
+  const newCategory = category.replace(/\b\w+\b/g, (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
   const [products, setProducts] = useState([]);
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState(null);
@@ -23,7 +30,6 @@ export const CategoryProducts = ({ route }) => {
           throw new Error("Failed to fetch products");
         }
         const data = await res.json();
-
         const productsImages = data.map((product) => ({
           ...product,
           imageUrl: product.image,
@@ -73,9 +79,10 @@ export const CategoryProducts = ({ route }) => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>{category}</Text>
+      <Text style={styles.heading}>{newCategory}</Text>
+
       {isLoading ? (
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color="blue" />
       ) : (
         //one way to show it
         /* <View style={styles.products}>
@@ -150,6 +157,8 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
+    height: "100%",
+    marginTop: 20,
   },
   heading: {
     fontSize: 25,
@@ -192,7 +201,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   title: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
     color: "green",
   },
@@ -211,7 +220,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleWrapper: {
-    alignItems: "flex-end",
+    alignItems: "flex-start",
     flexDirection: "column",
   },
   buttonBox: {

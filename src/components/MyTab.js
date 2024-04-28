@@ -30,8 +30,16 @@ export const MyTab = () => {
         },
       })}
     >
-      <Tab.Screen name="Products" component={Products} />
-      <Tab.Screen name="ShoppingCart" component={ShoppingCart} />
+      <Tab.Screen
+        name="Products"
+        component={Products}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="ShoppingCart"
+        component={ShoppingCart}
+        options={{ headerShown: false }}
+      />
     </Tab.Navigator>
   );
 };
