@@ -22,12 +22,12 @@ export const ShoppingCart = () => {
     }
   }
   const roundedTotal = Math.round(total * 100) / 100;
-  console.log("total", total);
-  const handleIncrease = () => {
-    dispatch({ type: INCREASE_COUNT });
+
+  const handleIncreaseQuantity = (productId) => {
+    dispatch({ type: "INCREASE_QUANTITY", payload: { productId } });
   };
-  const handleDecrease = () => {
-    dispatch({ type: DECREASE_COUNT });
+  const handleDecreaseQuantity = (decreaseId) => {
+    dispatch({ type: "DECREASE_QUANTITY", payload: { decreaseId } });
   };
   // const itemQuantity = cartItems[productId] ? cartItems[productId].quantity : 0;
   // const quantity = cartItemsArray.reduce((acc, item) => acc + item.quantity, 0);
@@ -54,28 +54,28 @@ export const ShoppingCart = () => {
             <View style={styles.product} key={index}>
               <Image source={{ uri: item.image }} style={styles.image} />
               <View style={styles.productInfo}>
-                <ScrollView>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "space-between",
-                      marginTop: 15,
-                      flexDirection: "row",
-                      paddingHorizontal: 5,
-                    }}
+                <Text style={styles.title}>{item.title}</Text>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "space-between",
+                    marginTop: 15,
+                    flexDirection: "row",
+                    width: "90%",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => handleDecreaseQuantity(item.id)}
                   >
-                    <TouchableOpacity>
-                      <Icon name="minus-circle" size={18} color="blue" />
-                    </TouchableOpacity>
-                    <Text style={styles.quantity}>
-                      quantity:{item.quantity}
-                    </Text>
-                    <TouchableOpacity>
-                      <Icon name="plus-circle" size={18} color="green" />
-                    </TouchableOpacity>
-                  </View>
-                </ScrollView>
+                    <Icon name="minus-circle" size={18} color="blue" />
+                  </TouchableOpacity>
+                  <Text style={styles.quantity}>quantity:{item.quantity}</Text>
+                  <TouchableOpacity
+                    onPress={() => handleIncreaseQuantity(item.id)}
+                  >
+                    <Icon name="plus-circle" size={18} color="green" />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           ))}
@@ -158,18 +158,18 @@ const styles = StyleSheet.create({
     fontSize: 17,
     // fontWeight: "bold",
     color: "black",
-    marginTop: 3,
+    marginTop: 20,
   },
   productInfo: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     // paddingHorizontal: 5,
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   titleWrapper: {
-    alignItems: "flex-start",
-    flexDirection: "column",
+    alignItems: "center",
+    flexDirection: "row",
   },
   buttonBox: {
     flexDirection: "row",
@@ -178,7 +178,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
-
     borderWidth: 1,
     borderRadius: 20,
     backgroundColor: "orange",
@@ -186,7 +185,6 @@ const styles = StyleSheet.create({
   },
   quantity: {
     fontSize: 16,
-
     fontWeight: "bold",
     color: "black",
   },

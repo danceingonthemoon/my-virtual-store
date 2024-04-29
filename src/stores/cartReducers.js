@@ -19,21 +19,31 @@ const cartReducers = (state = initialState, action) => {
           [newItem.id]: { ...newItem, quantity: 1 }, //use item.id as key to manage the cart
         },
       };
-    // why not work ?
-    // case UPDATE_TO_CART:
-    //   const { itemId: updateId, quantity: updateQuantity } = action.payload;
-    //   const itemToUpdate = state.cart[updateId];
-    //   if (itemToUpdate) {
-    //     const updatedQuantity = itemToUpdate.quantity + 1; // Increase quantity by one
-    //     return {
-    //       ...state,
-    //       cart: {
-    //         ...state.cart,
-    //         [updateId]: { ...itemToUpdate, quantity: updatedQuantity },
-    //       },
-    //     };
-    //   }
-    //   return state;
+    case "INCREASE_QUANTITY":
+      const { productId, quantity } = action.payload;
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          [productId]: {
+            ...state.cart[productId],
+            quantity: state.cart[productId].quantity + 1,
+          },
+        },
+      };
+    case "DECREASE_QUANTITY":
+      const { decreaseId } = action.payload;
+      console.log("decreaseId", decreaseId);
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          [decreaseId]: {
+            ...state.cart[decreaseId],
+            quantity: state.cart[decreaseId].quantity - 1,
+          },
+        },
+      };
 
     default:
       return state;
