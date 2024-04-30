@@ -15,8 +15,8 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     //?? What is the purpose of the Provider component??
-    //The Provider component is used to wrap the entire application so that 
-    // the Redux store is available to all components in the application.  
+    //The Provider component is used to wrap the entire application so that
+    // the Redux store is available to all components in the application.
     // This is done by passing the store as a prop to the Provider component. e.g. database
     <Provider store={store}>
       <NavigationContainer>
