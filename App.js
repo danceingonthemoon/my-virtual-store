@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { CategoryProducts } from "./src/screens/CategoryProducts";
 import { MyTab } from "./src/components/MyTab";
-import { Products } from "./src/screens/Products";
 import { ProductDetails } from "./src/screens/ProductDetails";
 import { createStackNavigator } from "@react-navigation/stack";
 
