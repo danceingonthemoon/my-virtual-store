@@ -11,8 +11,8 @@ export const ProductDetails = () => {
   const navigation = useNavigation();
   const { productId } = route?.params;
   const dispath = useDispatch();
-  const { productData, loading, error } = useSelector(selectCart);
-
+  const productData = useSelector(selectCart);
+  console.log("productData", productData);
   // console.log("product", product);
   // handle add to cart button
   const handleAddToCart = () => {
@@ -22,7 +22,7 @@ export const ProductDetails = () => {
   useEffect(() => {
     console.log("productId", productId);
     dispath(fetchProductDataAsync(productId));
-  }, [productId]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -32,9 +32,7 @@ export const ProductDetails = () => {
         <Text style={styles.title}>{productData?.title}</Text>
         <View style={styles.box}>
           <Text style={styles.letter}>Rate : {productData?.rating?.rate}</Text>
-          <Text style={styles.letter}>
-            Count: ${productData?.rating?.count}
-          </Text>
+          <Text style={styles.letter}>Count: {productData?.rating?.count}</Text>
           <Text style={styles.letter}>Price: ${productData?.price}</Text>
         </View>
         <View style={styles.buttonContainer}>
