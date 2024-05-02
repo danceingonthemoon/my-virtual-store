@@ -36,4 +36,4 @@ yarn-error.*
  
 /tmp
 nk_tasks.md
- 
+.vscode/*
