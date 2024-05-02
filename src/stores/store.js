@@ -1,16 +1,10 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import cartReducer from "./cartReducers";
-import { composeWithDevTools } from "redux-devtools-extension";
+import cartSlice from "./cartSlice";
+import { configureStore } from "@reduxjs/toolkit";
 
-const initialState = {};
-
-const rootReducer = combineReducers({
-  cart: cartReducer,
+const store = configureStore({
+  reducer: {
+    cart: cartSlice,
+  },
 });
 
-const store = createStore(
-  rootReducer,
-  initialState,
-  composeWithDevTools(applyMiddleware())
-);
 export default store;

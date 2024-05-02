@@ -1,78 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductDataAsync, selectCart } from "../stores/cartSlice";
 
-//?? What is the purpose of the useEffect hook??
-//The useEffect hook is used to perform side effects in function components.
-// It is similar to componentDidMount, componentDidUpdate, and componentWillUnmount in class components.
-// It takes two arguments: a function that contains the side effect, and an optional array of dependencies.
-// The function is called after the component has rendered, and it is called after every render by default.
 export const ProductDetails = () => {
-  //?? useState to null or []??
-  //null is better because it's more explicit that the data is not available yet
-  //[] is better if it's an array of data
-  const [product, setProduct] = useState(null);
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
   const dispath = useDispatch();
+  const { productData, loading, error } = useSelector(selectCart);
 
+  // console.log("product", product);
   // handle add to cart button
   const handleAddToCart = () => {
-    dispath({ type: "ADD_TO_CART", payload: product });
     navigation.navigate("ShoppingCart");
   };
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (!productId) {
-        console.log("No productId provided");
-        return;
-      }
-      try {
-        const res = await fetch(
-          `https://fakestoreapi.com/products/${productId}`
-        );
-        console.log("productId", productId);
-        if (!res.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        const data = await res.json();
-        setProduct(data);
-      } catch (error) {
-        console.log("Error fetching products: ", error.message);
-      }
-    };
-    fetchProduct();
-  }, []);
 
-  if (!product)
-    return (
-      <Text
-        style={{
-          fontSize: 30,
-          color: "black",
-          flexDirection: "row",
-          padding: 35,
-          justifyContent: "center",
-        }}
-      >
-        Loading ...
-      </Text>
-    );
+  useEffect(() => {
+    console.log("productId", productId);
+    dispath(fetchProductDataAsync(productId));
+  }, [productId]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Product Details</Text>
       <View style={styles.cart}>
-        <Image source={{ uri: product.image }} style={styles.image} />
-        <Text style={styles.title}>{product.title}</Text>
+        <Image source={{ uri: productData?.image }} style={styles.image} />
+        <Text style={styles.title}>{productData?.title}</Text>
         <View style={styles.box}>
-          <Text style={styles.letter}>Rate : {product.rating.rate}</Text>
-          <Text style={styles.letter}>Count: ${product.rating.count}</Text>
-          <Text style={styles.letter}>Price: ${product.price}</Text>
+          <Text style={styles.letter}>Rate : {productData?.rating?.rate}</Text>
+          <Text style={styles.letter}>
+            Count: ${productData?.rating?.count}
+          </Text>
+          <Text style={styles.letter}>Price: ${productData?.price}</Text>
         </View>
         <View style={styles.buttonContainer}>
           <View style={styles.buttonBox}>
@@ -135,7 +98,7 @@ export const ProductDetails = () => {
                 backgroundColor: "lightgrey",
               }}
             >
-              {product.description}
+              {productData?.description}
             </Text>
           </View>
         </View>

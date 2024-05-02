@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { connect } from "react-redux";
 import { Image } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export const ShoppingCart = () => {
