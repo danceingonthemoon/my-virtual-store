@@ -4,24 +4,29 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductDataAsync, selectCart } from "../stores/cartSlice";
+import {
+  fetchProductDataAsync,
+  selectCart,
+  addToCart,
+} from "../stores/cartSlice";
 
 export const ProductDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const productData = useSelector(selectCart);
   console.log("productData", productData);
   // console.log("product", product);
   // handle add to cart button
   const handleAddToCart = () => {
+    dispatch(addToCart(productData));
     navigation.navigate("ShoppingCart");
   };
 
   useEffect(() => {
     console.log("productId", productId);
-    dispath(fetchProductDataAsync(productId));
+    dispatch(fetchProductDataAsync(productId));
   }, []);
 
   return (

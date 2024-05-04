@@ -1,34 +1,36 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { connect } from "react-redux";
+import {
+  fetchProductDataAsync,
+  increaseQuantity,
+  decreaseQuantity,
+} from "../stores/cartSlice";
 import { Image } from "react-native";
-
+import { selectCart } from "../stores/cartSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export const ShoppingCart = () => {
   // TODO: write a function to display all of the items in the cart
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.cart);
-
-  const cartItemsArray = Object.values(cartItems);
-  console.log("cartItemsArray", cartItemsArray);
-
-  let total = 0;
-  for (let i = 0; i < cartItemsArray.length; i++) {
-    const price = parseFloat(cartItemsArray[i].price);
-    if (!isNaN(price)) {
-      total += price;
-    }
-  }
-  const roundedTotal = Math.round(total * 100) / 100;
-
-  const handleIncreaseQuantity = (productId) => {
-    dispatch({ type: "INCREASE_QUANTITY", payload: { productId } });
+  const cartItems = useSelector(selectCart);
+  console.log("cartItems", cartItems);
+  // const productId = Object.keys(cartItems);
+  const handleIncreaseQuantity = (id) => {
+    dispatch(increaseQuantity(id));
   };
-  const handleDecreaseQuantity = (decreaseId) => {
-    dispatch({ type: "DECREASE_QUANTITY", payload: { decreaseId } });
+  const handleDecreaseQuantity = (id) => {
+    dispatch(decreaseQuantity(id));
   };
+  // let total = 0;
+  // for (let i = 0; i < cartItemsArray.length; i++) {
+  //   const price = parseFloat(cartItemsArray[i].price);
+  //   if (!isNaN(price)) {
+  //     total += price;
+  //   }
+  // }
+  // const roundedTotal = Math.round(total * 100) / 100;
+
   // const itemQuantity = cartItems[productId] ? cartItems[productId].quantity : 0;
   // const quantity = cartItemsArray.reduce((acc, item) => acc + item.quantity, 0);
   // console.log("quantity", quantity);
@@ -42,15 +44,15 @@ export const ShoppingCart = () => {
       <View style={styles.cart}>
         <View style={styles.top}>
           <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-            Items : {cartItemsArray.length}
+            Items : {cartItems.length}
           </Text>
           <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-            Total Price : ${roundedTotal}
+            {/* Total Price : ${roundedTotal} */}
           </Text>
         </View>
 
         <View style={styles.products}>
-          {cartItemsArray.map((item, index) => (
+          {cartItems.map((item, index) => (
             <View style={styles.product} key={index}>
               <Image source={{ uri: item.image }} style={styles.image} />
               <View style={styles.productInfo}>
@@ -85,12 +87,12 @@ export const ShoppingCart = () => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  cartItems: state.cartItems,
-  count: state.counter,
-});
+// const mapStateToProps = (state) => ({
+//   cartItems: state.cartItems,
+//   count: state.counter,
+// });
 
-export default connect(mapStateToProps)(ShoppingCart);
+// export default connect(mapStateToProps)(ShoppingCart);
 const styles = StyleSheet.create({
   container: {
     flex: 1,

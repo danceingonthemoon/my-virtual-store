@@ -21,7 +21,7 @@ export const MyTab = () => {
           let iconName;
           // check if route exists and if the route name is "Products"
           if (route && route.name === "Products") {
-            console.log(route);
+            // console.log(route);
             iconName = focused ? "bag" : "bag-outline";
           } else if (route && route.name === "ShoppingCart") {
             iconName = focused ? "cart" : "cart-outline";

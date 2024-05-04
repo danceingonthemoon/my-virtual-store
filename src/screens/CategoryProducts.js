@@ -15,7 +15,7 @@ export const CategoryProducts = ({ route }) => {
         const res = await fetch(
           `https://fakestoreapi.com/products/category/${category}`
         );
-        console.log(res.status);
+        // console.log(res.status);
         // handle error
         if (res.status !== 200) {
           throw new Error("Failed to fetch products");
@@ -33,7 +33,7 @@ export const CategoryProducts = ({ route }) => {
       }
     };
     fetchProducts();
-  }, [category]);
+  }, []);
 
   const handleProductPress = (product) => {
     navigation.navigate("ProductDetails", { productId: product.id });
