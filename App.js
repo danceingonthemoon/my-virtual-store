@@ -1,49 +1,76 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { CategoryProducts } from "./src/screens/CategoryProducts";
-import { MyTab } from "./src/components/MyTab";
-
-import { ProductDetails } from "./src/screens/ProductDetails";
+import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import React from "react";
 import { Provider } from "react-redux";
 import store from "./src/stores/store";
-import React from "react";
-
+import { Products } from "./src/screens/Products";
+import { CategoryProducts } from "./src/screens/CategoryProducts";
+import { ProductDetails } from "./src/screens/ProductDetails";
+import { ShoppingCart } from "./src/screens/ShoppingCart";
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-export default function App() {
+const HomeStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Products"
+      component={Products}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ProductDetails"
+      component={ProductDetails}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="CategoryProducts"
+      component={CategoryProducts}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="ShoppingCart"
+      component={ShoppingCart}
+      options={{ headerShown: false }}
+    />
+  </Stack.Navigator>
+);
+const MyTab = () => (
+  <Tab.Navigator>
+    <Tab.Screen
+      name="HomeStack"
+      component={HomeStack}
+      options={{
+        headerShown: false,
+        tabBarLabel: "Products",
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="home" size={size} color={color} />
+        ),
+      }}
+    />
+
+    <Tab.Screen
+      name="ShoppingCart"
+      component={ShoppingCart}
+      options={{
+        headerShown: false,
+        tabBarLabel: "Cart",
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="cart" size={size} color={color} />
+        ),
+      }}
+    />
+  </Tab.Navigator>
+);
+
+const App = () => {
   return (
-    //?? What is the purpose of the Provider component??
-    //The Provider component is used to wrap the entire application so that
-    // the Redux store is available to all components in the application.
-    // This is done by passing the store as a prop to the Provider component. e.g. database
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Home"
-            component={MyTab}
-            options={{ headerShown: false }}
-          />
-          {/* <Stack.Screen name="Products" component={Products} /> */}
-          <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
-          <Stack.Screen
-            name="ProductDetails"
-            component={ProductDetails}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
+        <MyTab />
       </NavigationContainer>
     </Provider>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+};
+export default App;

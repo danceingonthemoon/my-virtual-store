@@ -4,11 +4,16 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
+// import {
+//   fetchProductDataAsync,
+//   selectCart,
+//   addToCart,
+// } from "../stores/cartSlice";
 import {
   fetchProductDataAsync,
-  selectCart,
   addToCart,
-} from "../stores/cartSlice";
+  selectCart,
+} from "../stores/cartSlice1";
 
 export const ProductDetails = () => {
   const route = useRoute();
@@ -16,12 +21,13 @@ export const ProductDetails = () => {
   const { productId } = route?.params;
   const dispatch = useDispatch();
   const productData = useSelector(selectCart);
+
   console.log("productData", productData);
   // console.log("product", product);
   // handle add to cart button
-  const handleAddToCart = () => {
-    dispatch(addToCart(productData));
-    navigation.navigate("ShoppingCart");
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    navigation.goBack();
   };
 
   useEffect(() => {
@@ -43,7 +49,16 @@ export const ProductDetails = () => {
         <View style={styles.buttonContainer}>
           <View style={styles.buttonBox}>
             <View style={styles.iconBox}>
-              <Icon name="close" size={13} color="blue" />
+              <Icon
+                name="close"
+                size={20}
+                color="red"
+                style={{
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  backgroundColor: "lightgreen",
+                }}
+              />
             </View>
             <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
               <Text
@@ -59,11 +74,11 @@ export const ProductDetails = () => {
           </View>
           <View style={styles.buttonBox}>
             <View style={styles.iconBox}>
-              <Icon name="close" size={13} color="blue" />
+              <Icon name="cart" size={23} color="blue" />
             </View>
             <TouchableOpacity
               title="Add To Cart"
-              onPress={() => handleAddToCart()}
+              onPress={() => handleAddToCart(productData)}
             >
               <Text
                 style={{
@@ -172,11 +187,11 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   iconBox: {
-    borderWidth: 1,
-    borderRadius: 20,
+    // borderWidth: 1,
+    // borderRadius: 20,
     padding: 5,
     margin: 8,
-    backgroundColor: "lightgreen",
+    // backgroundColor: "lightgreen",
   },
   buttonBox: {
     flexDirection: "row",

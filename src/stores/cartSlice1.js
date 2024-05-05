@@ -5,7 +5,6 @@ const initialState = {
   productData: [],
   loading: false,
   error: null,
-  totalQuantity: 0,
 };
 export const fetchProductDataAsync = createAsyncThunk(
   "fetchProductData",
@@ -16,12 +15,11 @@ export const fetchProductDataAsync = createAsyncThunk(
     }
     try {
       const response = await fetchProductByID(productId);
-      console.log("response1", response);
+
       // dispatch(cartSlice.actions.fetchPro(response));
-      console.log("response2", response);
       return response;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue("Failed to fetch product data");
     }
   }
 );
@@ -34,33 +32,47 @@ const cartSlice = createSlice({
     //   state.productData = action.payload;
     // },
     addToCart: (state, action) => {
-      console.log("addToCart action", action.payload);
-      const { id, title, price, description, category, image, rating } =
-        action.payload;
+      const { id } = action.payload;
       if (!Array.isArray(state.productData)) {
-        state.productData = [];
+        state.productData = []; // Initialize as empty array if not already
       }
-      const existingItemIndex = state.productData.findIndex(
-        (item) => item.id === id
-      );
-
-      if (existingItemIndex !== -1) {
-        // If item exists, update its quantity
-        state.productData[existingItemIndex].quantity++;
+      const existingItem = state.productData.find((item) => item.id === id);
+      if (existingItem) {
+        existingItem.quantity++;
       } else {
-        // If item doesn't exist, add it to the cart
         state.productData.push({
-          id,
-          title,
-          price,
-          description,
-          category,
-          image,
-          rating,
-          quantity: 0, // Set initial quantity to 1 for new items
+          ...action.payload,
+          quantity: 0,
         });
       }
-      state.totalQuantity++; // Increment the total quantity
+      state.totalQuantity++;
+
+      //   const { id, title, price, description, category, image, rating } =
+      //     action.payload;
+      //   if (!Array.isArray(state.productData)) {
+      //     state.productData = [];
+      //   }
+      //   const existingItemIndex = state.productData.findIndex(
+      //     (item) => item.id === id
+      //   );
+
+      //   if (existingItemIndex !== -1) {
+      //     // If item exists, update its quantity
+      //     state.productData[existingItemIndex].quantity++;
+      //   } else {
+      //     // If item doesn't exist, add it to the cart
+      //     state.productData.push({
+      //       id,
+      //       title,
+      //       price,
+      //       description,
+      //       category,
+      //       image,
+      //       rating,
+      //       quantity: 0,
+      //     });
+      //   }
+      //   state.totalQuantity++;
     },
     increaseQuantity: (state, action) => {
       state.productData.forEach((product) => {
@@ -103,7 +115,7 @@ const cartSlice = createSlice({
         console.error("Fetch rejected. Error:", action.payload);
         state.loading = false;
         state.error = action.payload;
-        state.productData = [];
+        state.productData = {};
       });
   },
 });

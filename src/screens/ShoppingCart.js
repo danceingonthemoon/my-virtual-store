@@ -1,98 +1,128 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import {
-  fetchProductDataAsync,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { useRoute } from "@react-navigation/core";
+import {
   increaseQuantity,
   decreaseQuantity,
-} from "../stores/cartSlice";
-import { Image } from "react-native";
-import { selectCart } from "../stores/cartSlice";
+  selectCart,
+  fetchProductDataAsync,
+} from "../stores/cartSlice1";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export const ShoppingCart = () => {
-  // TODO: write a function to display all of the items in the cart
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCart);
-  console.log("cartItems", cartItems);
-  // const productId = Object.keys(cartItems);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    setIsLoading(false);
+    calculateTotalItemsAndPrice();
+  }, [cartItems]);
+
+  useEffect(() => {
+    dispatch(fetchProductDataAsync());
+  }, []);
   const handleIncreaseQuantity = (id) => {
     dispatch(increaseQuantity(id));
   };
+
   const handleDecreaseQuantity = (id) => {
     dispatch(decreaseQuantity(id));
   };
-  // let total = 0;
-  // for (let i = 0; i < cartItemsArray.length; i++) {
-  //   const price = parseFloat(cartItemsArray[i].price);
-  //   if (!isNaN(price)) {
-  //     total += price;
-  //   }
-  // }
-  // const roundedTotal = Math.round(total * 100) / 100;
 
-  // const itemQuantity = cartItems[productId] ? cartItems[productId].quantity : 0;
-  // const quantity = cartItemsArray.reduce((acc, item) => acc + item.quantity, 0);
-  // console.log("quantity", quantity);
-  // TODO: ShoppingCart show how many items in the cart on the tab bar
-  // TODO: Add a button to add items also show the total price of the cart
-  // TODO: Show items in the cart when the user exits the app and comes back
+  const calculateTotalItemsAndPrice = () => {
+    let itemsCount = 0;
+    let totalPrice = 0;
+    if (Array.isArray(cartItems)) {
+      cartItems.forEach((item) => {
+        itemsCount += item.quantity;
+        totalPrice += item.price * item.quantity;
+      });
+    }
+    setTotalItems(itemsCount);
+    setTotalPrice(totalPrice);
+  };
+
+  const renderItem = ({ item }) => (
+    <View style={styles.product}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.productInfo}>
+        <Text style={styles.title}>{item.title}</Text>
+        <View style={styles.buttonBox}>
+          <TouchableOpacity onPress={() => handleDecreaseQuantity(item.id)}>
+            <Icon name="minus-circle" size={18} color="blue" />
+          </TouchableOpacity>
+          <Text style={styles.quantity}>quantity: {item.quantity}</Text>
+          <TouchableOpacity onPress={() => handleIncreaseQuantity(item.id)}>
+            <Icon name="plus-circle" size={18} color="green" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Shopping Cart</Text>
-      <View style={styles.cart}>
-        <View style={styles.top}>
-          <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-            Items : {cartItems.length}
+      <View style={styles.products}>
+        {cartItems.length === 0 ? (
+          <Text
+            style={{
+              fontSize: 30,
+              color: "black",
+              margin: 30,
+              padding: 10,
+              fontWeight: "bold",
+            }}
+          >
+            Your cart is empty, please add some items.
           </Text>
-          <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-            {/* Total Price : ${roundedTotal} */}
-          </Text>
-        </View>
-
-        <View style={styles.products}>
-          {cartItems.map((item, index) => (
-            <View style={styles.product} key={index}>
-              <Image source={{ uri: item.image }} style={styles.image} />
-              <View style={styles.productInfo}>
-                <Text style={styles.title}>{item.title}</Text>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "space-between",
-                    marginTop: 15,
-                    flexDirection: "row",
-                    width: "90%",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => handleDecreaseQuantity(item.id)}
-                  >
-                    <Icon name="minus-circle" size={18} color="blue" />
-                  </TouchableOpacity>
-                  <Text style={styles.quantity}>quantity:{item.quantity}</Text>
-                  <TouchableOpacity
-                    onPress={() => handleIncreaseQuantity(item.id)}
-                  >
-                    <Icon name="plus-circle" size={18} color="green" />
-                  </TouchableOpacity>
-                </View>
-              </View>
+        ) : (
+          <>
+            <View style={styles.top}>
+              <Text
+                style={{ fontWeight: "bold", color: "white", fontSize: 20 }}
+              >
+                {/* Display total items or total price here */}
+                <Text> Total Items: {totalItems} </Text>
+                <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
+              </Text>
             </View>
-          ))}
-        </View>
+
+            <FlatList
+              data={cartItems}
+              renderItem={renderItem}
+              keyExtractor={(item, index) =>
+                item.id ? item.id.toString() : index.toString()
+              }
+              contentContainerStyle={styles.products}
+            />
+          </>
+        )}
       </View>
     </View>
   );
 };
 
-// const mapStateToProps = (state) => ({
-//   cartItems: state.cartItems,
-//   count: state.counter,
-// });
-
-// export default connect(mapStateToProps)(ShoppingCart);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -128,62 +158,35 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   products: {
-    flex: 1,
-    height: "100%",
-    padding: 5,
-    // flexDirection: "row",
-    justifyContent: "flex-start",
-
-    alignItems: "stretch",
+    width: "100%",
+    flexGrow: 1,
+    paddingVertical: 10,
   },
   product: {
     flexDirection: "row",
-    marginTop: 5,
     alignItems: "center",
     marginVertical: 10,
-    width: "97%",
-    height: "18%",
-    justifyContent: "center",
-    // backgroundColor: "#f9f9f9",
-    borderRadius: 10,
-    borderWidth: 1,
     paddingHorizontal: 5,
   },
   image: {
-    width: "30%",
-    height: "90%",
+    width: 80,
+    height: 80,
     marginRight: 20,
-    borderWidth: 1,
     borderRadius: 10,
   },
   title: {
     fontSize: 17,
-    // fontWeight: "bold",
     color: "black",
-    marginTop: 20,
   },
   productInfo: {
     flex: 1,
     flexDirection: "column",
-    // paddingHorizontal: 5,
     justifyContent: "space-between",
-    alignItems: "center",
-  },
-  titleWrapper: {
-    alignItems: "center",
-    flexDirection: "row",
   },
   buttonBox: {
     flexDirection: "row",
-    padding: 5,
-    width: "30%",
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-    borderWidth: 1,
-    borderRadius: 20,
-    backgroundColor: "orange",
-    marginBottom: 10,
+    justifyContent: "space-between",
   },
   quantity: {
     fontSize: 16,
@@ -191,9 +194,8 @@ const styles = StyleSheet.create({
     color: "black",
   },
   top: {
-    display: "flex",
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     padding: 10,
     margin: 5,
     borderWidth: 1,
@@ -201,9 +203,9 @@ const styles = StyleSheet.create({
     width: "98%",
     backgroundColor: "green",
   },
-  // quantity: {
-  //   fontSize: 16,
-  //   fontWeight: "bold",
-  //   color: "black",
-  // },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
