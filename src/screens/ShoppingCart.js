@@ -13,14 +13,14 @@ import { useRoute } from "@react-navigation/core";
 import {
   increaseQuantity,
   decreaseQuantity,
-  selectCart,
-  fetchProductDataAsync,
-} from "../stores/cartSlice1";
+  cartDetails,
+} from "../stores/cartSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 export const ShoppingCart = () => {
   const dispatch = useDispatch();
-  const cartItems = useSelector(selectCart);
+  const cartItems = useSelector(cartDetails);
+  console.log("cartItems", cartItems);
   const [isLoading, setIsLoading] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -30,9 +30,6 @@ export const ShoppingCart = () => {
     calculateTotalItemsAndPrice();
   }, [cartItems]);
 
-  useEffect(() => {
-    dispatch(fetchProductDataAsync());
-  }, []);
   const handleIncreaseQuantity = (id) => {
     dispatch(increaseQuantity(id));
   };
@@ -128,11 +125,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 25,
-    padding: 15,
-    backgroundColor: "white",
-    height: "96%",
-    width: "100%",
+    margin: 25,
+    padding: 10,
+    backgroundColor: "pink",
+    height: "99%",
+    width: "99%",
     borderRadius: 10,
   },
   heading: {
@@ -150,7 +147,7 @@ const styles = StyleSheet.create({
   },
   cart: {
     flex: 1,
-    width: "100%",
+    width: "98%",
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
@@ -160,7 +157,7 @@ const styles = StyleSheet.create({
   products: {
     width: "100%",
     flexGrow: 1,
-    paddingVertical: 10,
+    paddingVertical: 10, 
   },
   product: {
     flexDirection: "row",

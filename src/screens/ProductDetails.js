@@ -9,24 +9,18 @@ import { useDispatch, useSelector } from "react-redux";
 //   selectCart,
 //   addToCart,
 // } from "../stores/cartSlice";
-import {
-  fetchProductDataAsync,
-  addToCart,
-  selectCart,
-} from "../stores/cartSlice1";
-
+import { fetchProductDataAsync, selectCart } from "../stores/productSlice";
+import { addToCart } from "../stores/cartSlice";
 export const ProductDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
   const dispatch = useDispatch();
   const productData = useSelector(selectCart);
-
   console.log("productData", productData);
-  // console.log("product", product);
   // handle add to cart button
   const handleAddToCart = () => {
-    dispatch(addToCart());
+    dispatch(addToCart(productData));
     navigation.goBack();
   };
 

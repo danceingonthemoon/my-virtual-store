@@ -9,6 +9,8 @@ import { Products } from "./src/screens/Products";
 import { CategoryProducts } from "./src/screens/CategoryProducts";
 import { ProductDetails } from "./src/screens/ProductDetails";
 import { ShoppingCart } from "./src/screens/ShoppingCart";
+import { useSelector } from "react-redux";
+import { totalQuantity } from "./src/stores/cartSlice";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -36,34 +38,37 @@ const HomeStack = () => (
     />
   </Stack.Navigator>
 );
-const MyTab = () => (
-  <Tab.Navigator>
-    <Tab.Screen
-      name="HomeStack"
-      component={HomeStack}
-      options={{
-        headerShown: false,
-        tabBarLabel: "Products",
-        tabBarIcon: ({ color, size }) => (
-          <Ionicons name="home" size={size} color={color} />
-        ),
-      }}
-    />
+const MyTab = () => {
+  const totalQuantityValue = useSelector(totalQuantity);
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="HomeStack"
+        component={HomeStack}
+        options={{
+          headerShown: false,
+          tabBarLabel: "Products",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
+      />
 
-    <Tab.Screen
-      name="ShoppingCart"
-      component={ShoppingCart}
-      options={{
-        headerShown: false,
-        tabBarLabel: "Cart",
-        tabBarIcon: ({ color, size }) => (
-          <Ionicons name="cart" size={size} color={color} />
-        ),
-      }}
-    />
-  </Tab.Navigator>
-);
-
+      <Tab.Screen
+        name="ShoppingCart"
+        component={ShoppingCart}
+        options={{
+          headerShown: false,
+          tabBarLabel: "Cart",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="cart" size={size} color={color} />
+          ),
+          tabBarBadge: totalQuantityValue ? totalQuantityValue : null,
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
 const App = () => {
   return (
     <Provider store={store}>
