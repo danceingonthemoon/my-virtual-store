@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 // import {
@@ -25,102 +25,116 @@ export const ProductDetails = () => {
   console.log("productData", productData);
   // console.log("product", product);
   // handle add to cart button
-  const handleAddToCart = (product) => {
-    dispatch(addToCart(product));
+  const handleAddToCart = () => {
+    dispatch(addToCart());
     navigation.goBack();
   };
 
   useEffect(() => {
-    console.log("productId", productId);
+    // console.log("productId", productId);
     dispatch(fetchProductDataAsync(productId));
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Product Details</Text>
-      <View style={styles.cart}>
-        <Image source={{ uri: productData?.image }} style={styles.image} />
-        <Text style={styles.title}>{productData?.title}</Text>
-        <View style={styles.box}>
-          <Text style={styles.letter}>Rate : {productData?.rating?.rate}</Text>
-          <Text style={styles.letter}>Count: {productData?.rating?.count}</Text>
-          <Text style={styles.letter}>Price: ${productData?.price}</Text>
-        </View>
-        <View style={styles.buttonContainer}>
-          <View style={styles.buttonBox}>
-            <View style={styles.iconBox}>
-              <Icon
-                name="close"
-                size={20}
-                color="red"
-                style={{
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  backgroundColor: "lightgreen",
-                }}
-              />
-            </View>
-            <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
-              <Text
-                style={{
-                  fontSize: 19,
-                  fontWeight: "bold",
-                  color: "green",
-                }}
-              >
-                Back
-              </Text>
-            </TouchableOpacity>
+      <ScrollView
+        maintainVisibleContentPosition={{ auto: true }}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        <View style={styles.cart}>
+          <Image source={{ uri: productData?.image }} style={styles.image} />
+          <Text style={styles.title}>{productData?.title}</Text>
+          <View style={styles.box}>
+            <Text style={styles.letter}>
+              Rate : {productData?.rating?.rate}
+            </Text>
+            <Text style={styles.letter}>
+              Count: {productData?.rating?.count}
+            </Text>
+            <Text style={styles.letter}>Price: ${productData?.price}</Text>
           </View>
-          <View style={styles.buttonBox}>
-            <View style={styles.iconBox}>
-              <Icon name="cart" size={23} color="blue" />
-            </View>
-            <TouchableOpacity
-              title="Add To Cart"
-              onPress={() => handleAddToCart(productData)}
-            >
-              <Text
-                style={{
-                  fontSize: 19,
-                  fontWeight: "bold",
-                  color: "green",
-                }}
+          <View style={styles.buttonContainer}>
+            <View style={styles.buttonBox}>
+              <View style={styles.iconBox}>
+                <Icon
+                  name="close"
+                  size={20}
+                  color="red"
+                  style={{
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    // backgroundColor: "lightgreen",
+                  }}
+                />
+              </View>
+              <TouchableOpacity
+                title="Back"
+                onPress={() => navigation.goBack()}
               >
-                Add To Cart
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: "green",
+                  }}
+                >
+                  Back
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.buttonBox}>
+              <View style={styles.iconBox}>
+                <Icon name="cart" size={25} color="purple" />
+              </View>
+              <TouchableOpacity
+                title="Add To Cart"
+                onPress={() => handleAddToCart(productData)}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    color: "green",
+                  }}
+                >
+                  Add To Cart
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={{ flex: 1, textAlign: "center", padding: 5 }}>
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 20,
-              justifyContent: "space-between",
-            }}
-          >
-            Description:
-          </Text>
-          <View>
+
+          <View style={{ flex: 1, textAlign: "center", padding: 5 }}>
             <Text
               style={{
-                flexDirection: "row",
+                fontWeight: "bold",
+                fontSize: 20,
                 justifyContent: "space-between",
-                alignItems: "center",
-                borderWidth: 1,
-                margin: 5,
-                height: "90%",
-                fontSize: 18,
-                // width: "auto",
-                backgroundColor: "lightgrey",
               }}
             >
-              {productData?.description}
+              Description:
             </Text>
+
+            <View>
+              <Text
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderWidth: 1,
+                  margin: 5,
+                  height: "90%",
+                  fontSize: 18,
+                  // width: "auto",
+                  backgroundColor: "grey",
+                }}
+              >
+                {productData?.description}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -131,7 +145,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "white",
+    margin: 10,
+    borderRadius: 10,
+    backgroundColor: "lightyellow",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
   },
   heading: {
     fontSize: 25,
@@ -140,17 +159,16 @@ const styles = StyleSheet.create({
     height: "6%",
     backgroundColor: "orange",
     textAlign: "center",
-    marginBottom: 10,
     marginTop: 25,
     padding: 10,
-    margin: 10,
+    // margin: 10,
     borderRadius: 15,
     color: "white",
   },
   cart: {
     flex: 1,
-    width: "97%",
-    // height: 300,
+    width: "95%",
+    height: "97%",
     // backgroundColor: "lightgrey",
     justifyContent: "center",
     alignItems: "center",
@@ -158,6 +176,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 5,
     borderRadius: 20,
+    marginTop: 10,
   },
   title: {
     fontSize: 30,
@@ -166,8 +185,9 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   image: {
-    width: "100%",
-    height: "40%",
+    marginTop: 15,
+    width: "95%",
+    height: "45%",
     borderRadius: 10,
     borderWidth: 1,
   },
@@ -190,19 +210,19 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderRadius: 20,
     padding: 5,
-    margin: 8,
+    margin: 5,
     // backgroundColor: "lightgreen",
   },
   buttonBox: {
     flexDirection: "row",
-    // padding: 5,
+
     width: "45%",
     alignItems: "center",
     justifyContent: "center",
-    margin: 25,
+    margin: 20,
     marginTop: 10,
     borderWidth: 1,
-    borderRadius: 13,
+    borderRadius: 15,
     backgroundColor: "orange",
     marginBottom: 10,
   },

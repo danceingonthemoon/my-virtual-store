@@ -115,12 +115,12 @@ export const CategoryProducts = ({ route }) => {
       )}
       <View style={styles.buttonBox}>
         <View style={styles.iconBox}>
-          <Icon name="close" size={14} />
+          <Icon name="close" size={12} />
         </View>
         <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
           <Text
             style={{
-              fontSize: 25,
+              fontSize: 17,
               fontWeight: "bold",
               color: "green",
             }}
@@ -136,9 +136,12 @@ export const CategoryProducts = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
+    margin: 10,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "lightyellow",
+    borderRadius: 10,
   },
   heading: {
     fontSize: 25,
@@ -206,13 +209,13 @@ const styles = StyleSheet.create({
   buttonBox: {
     flexDirection: "row",
     padding: 5,
-    width: "30%",
+    width: "24%",
+    height: "6%",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
-
+    marginTop: 20,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 15,
     backgroundColor: "orange",
     marginBottom: 10,
   },

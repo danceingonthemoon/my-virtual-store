@@ -32,47 +32,32 @@ const cartSlice = createSlice({
     //   state.productData = action.payload;
     // },
     addToCart: (state, action) => {
-      const { id } = action.payload;
+      const { id, title, price, description, category, image, rating } =
+        action.payload;
       if (!Array.isArray(state.productData)) {
-        state.productData = []; // Initialize as empty array if not already
+        state.productData = [];
       }
-      const existingItem = state.productData.find((item) => item.id === id);
-      if (existingItem) {
-        existingItem.quantity++;
+      const existingItemIndex = state.productData.findIndex(
+        (item) => item.id === id
+      );
+
+      if (existingItemIndex !== -1) {
+        // If item exists, update its quantity
+        state.productData[existingItemIndex].quantity++;
       } else {
+        // If item doesn't exist, add it to the cart
         state.productData.push({
-          ...action.payload,
+          id,
+          title,
+          price,
+          description,
+          category,
+          image,
+          rating,
           quantity: 0,
         });
       }
       state.totalQuantity++;
-
-      //   const { id, title, price, description, category, image, rating } =
-      //     action.payload;
-      //   if (!Array.isArray(state.productData)) {
-      //     state.productData = [];
-      //   }
-      //   const existingItemIndex = state.productData.findIndex(
-      //     (item) => item.id === id
-      //   );
-
-      //   if (existingItemIndex !== -1) {
-      //     // If item exists, update its quantity
-      //     state.productData[existingItemIndex].quantity++;
-      //   } else {
-      //     // If item doesn't exist, add it to the cart
-      //     state.productData.push({
-      //       id,
-      //       title,
-      //       price,
-      //       description,
-      //       category,
-      //       image,
-      //       rating,
-      //       quantity: 0,
-      //     });
-      //   }
-      //   state.totalQuantity++;
     },
     increaseQuantity: (state, action) => {
       state.productData.forEach((product) => {
@@ -101,7 +86,6 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProductDataAsync.pending, (state) => {
-        console.log("Fetching product data...");
         state.loading = true;
         state.error = null;
       })
@@ -112,10 +96,9 @@ const cartSlice = createSlice({
         state.productData = action.payload;
       })
       .addCase(fetchProductDataAsync.rejected, (state, action) => {
-        console.error("Fetch rejected. Error:", action.payload);
+        // console.error("Fetch rejected. Error:", action.payload);
         state.loading = false;
         state.error = action.payload;
-        state.productData = {};
       });
   },
 });

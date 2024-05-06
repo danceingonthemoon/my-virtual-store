@@ -89,18 +89,17 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchProductDataAsync.pending, (state) => {
-        console.log("Fetching product data...");
+
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchProductDataAsync.fulfilled, (state, action) => {
-        console.log("Fetch fulfilled. Payload:", action.payload);
+        // console.log("Fetch fulfilled. Payload:", action.payload);
         state.loading = false;
         state.error = null;
         state.productData = action.payload;
       })
       .addCase(fetchProductDataAsync.rejected, (state, action) => {
-        console.error("Fetch rejected. Error:", action.payload);
         state.loading = false;
         state.error = action.payload;
         state.productData = [];
