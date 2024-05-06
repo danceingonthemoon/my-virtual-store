@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     margin: 5,
+    borderColor: "yellow",
   },
   image: {
     marginTop: 15,
@@ -184,6 +185,7 @@ const styles = StyleSheet.create({
     height: "45%",
     borderRadius: 10,
     borderWidth: 1,
+    borderColor: "yellow",
   },
   box: {
     flexDirection: "row",
@@ -193,6 +195,7 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgreen",
     borderRadius: 10,
     justifyContent: "space-between",
+    borderColor: "yellow",
   },
   letter: {
     fontSize: 17,
@@ -209,7 +212,6 @@ const styles = StyleSheet.create({
   },
   buttonBox: {
     flexDirection: "row",
-
     width: "45%",
     alignItems: "center",
     justifyContent: "center",
@@ -217,7 +219,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderWidth: 1,
     borderRadius: 15,
-    backgroundColor: "orange",
+    backgroundColor: "pink",
     marginBottom: 10,
   },
   buttonContainer: {
