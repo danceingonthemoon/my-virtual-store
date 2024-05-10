@@ -1,13 +1,5 @@
-<<<<<<< HEAD
-import { StyleSheet } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { CategoryProducts } from "./src/screens/CategoryProducts";
-import { MyTab } from "./src/components/MyTab";
-import { ProductDetails } from "./src/screens/ProductDetails";
-=======
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
->>>>>>> M2Ok
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
@@ -49,40 +41,6 @@ const HomeStack = () => (
 const MyTab = () => {
   const totalQuantityValue = useSelector(totalQuantity);
   return (
-<<<<<<< HEAD
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={MyTab}
-          options={{ headerShown: false }}
-        />
-        {/* <Stack.Screen name="Products" component={Products} /> */}
-        <Stack.Screen
-          name="CategoryProducts"
-          component={CategoryProducts}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ProductDetails"
-          component={ProductDetails}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-});
-=======
     <Tab.Navigator>
       <Tab.Screen
         name="HomeStack"
@@ -121,4 +79,3 @@ const App = () => {
   );
 };
 export default App;
->>>>>>> M2Ok

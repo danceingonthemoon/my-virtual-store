@@ -9,7 +9,7 @@ export const Products = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -19,7 +19,6 @@ export const Products = () => {
           throw new Error("Failed to fetch categories");
         }
         const data = await res.json();
-<<<<<<< HEAD
         const formattedCategories = data.map((category) =>
           category.replace(
             /\b\w+('s)?\b/g,
@@ -28,9 +27,6 @@ export const Products = () => {
         );
         setCategories(formattedCategories);
         console.log("formattedCategories", formattedCategories);
-=======
-        setCategories(data);
->>>>>>> M2Ok
         setLoading(false);
       } catch (error) {
         console.log("Error fetching categories: ", error.message);
@@ -40,20 +36,15 @@ export const Products = () => {
   }, []);
 
   const handleCategoryPress = (category) => {
-<<<<<<< HEAD
     navigation.navigate("CategoryProducts", {
       category: category.toLowerCase(),
     });
-=======
-    navigation.navigate("CategoryProducts", { category: category });
->>>>>>> M2Ok
   };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.heading}>Categories</Text>
-<<<<<<< HEAD
         <View style={styles.categories}>
           {loading ? (
             <ActivityIndicator size="large" color="blue" />
@@ -76,33 +67,6 @@ export const Products = () => {
             <Text>No data found.</Text>
           )}
         </View>
-=======
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          <View style={styles.categories}>
-            {categories.map((category, index) => {
-              return (
-                <View key={`${category}-${index}`} style={styles.category}>
-                  <TouchableOpacity
-                    onPress={() => handleCategoryPress(category)}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {category}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-          </View>
-        )}
->>>>>>> M2Ok
       </View>
     </GestureHandlerRootView>
   );
@@ -146,15 +110,9 @@ const styles = StyleSheet.create({
   category: {
     marginTop: 10,
     margin: 10,
-<<<<<<< HEAD
-    width: "93%",
-    height: "9%",
-    backgroundColor: "lightgreen",
-=======
     width: "100%",
     height: "8%",
     backgroundColor: "lightpink",
->>>>>>> M2Ok
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",

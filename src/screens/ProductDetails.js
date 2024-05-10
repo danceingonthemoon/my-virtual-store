@@ -1,62 +1,17 @@
 import React, { useEffect } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
-<<<<<<< HEAD
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Button,
-  ActivityIndicator,
-} from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import Icon from "react-native-vector-icons/Ionicons";
-
-=======
 import { View, Text, StyleSheet, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   fetchProductDataAsync,
-//   selectCart,
-//   addToCart,
-// } from "../stores/cartSlice";
 import { fetchProductDataAsync, selectCart } from "../stores/productSlice";
 import { addToCart } from "../stores/cartSlice";
->>>>>>> M2Ok
 export const ProductDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
-<<<<<<< HEAD
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (!productId) {
-        console.log("No productId provided");
-        return;
-      }
-      try {
-        const res = await fetch(
-          `https://fakestoreapi.com/products/${productId}`
-        );
-        console.log("productId", productId);
-        if (!res.ok) {
-          throw new Error("Failed to fetch products");
-        }
-        const data = await res.json();
-        setProduct(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log("Error fetching products: ", error.message);
-      }
-    };
-    fetchProduct();
-=======
   const dispatch = useDispatch();
   const productData = useSelector(selectCart);
-  console.log("productData", productData);
   // handle add to cart button
   const handleAddToCart = () => {
     dispatch(addToCart(productData));
@@ -66,24 +21,11 @@ export const ProductDetails = () => {
   useEffect(() => {
     // console.log("productId", productId);
     dispatch(fetchProductDataAsync(productId));
->>>>>>> M2Ok
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Product Details</Text>
-<<<<<<< HEAD
-      {isLoading ? (
-        <ActivityIndicator size="large" color="blue" />
-      ) : (
-        <View style={styles.cart}>
-          <Image source={{ uri: product.image }} style={styles.image} />
-          <Text style={styles.title}>{product.title}</Text>
-          <View style={styles.box}>
-            <Text style={styles.letter}>Rate : {product.rating.rate}</Text>
-            <Text style={styles.letter}>Count : {product.rating.count}</Text>
-            <Text style={styles.letter}>Price : ${product.price}</Text>
-=======
       <ScrollView
         maintainVisibleContentPosition={{ auto: true }}
         contentContainerStyle={styles.scrollViewContent}
@@ -148,52 +90,8 @@ export const ProductDetails = () => {
                 </Text>
               </TouchableOpacity>
             </View>
->>>>>>> M2Ok
           </View>
-          <View style={styles.buttonContainer}>
-            <View style={styles.buttonBox}>
-              <View style={styles.iconBox}>
-                <Icon name="close" size={13} color="blue" />
-              </View>
-              <TouchableOpacity
-                title="Back"
-                onPress={() => navigation.goBack()}
-              >
-                <Text
-                  style={{
-                    fontSize: 19,
-                    fontWeight: "bold",
-                    color: "green",
-                  }}
-                >
-                  Back
-                </Text>
-              </TouchableOpacity>
-            </View>
 
-<<<<<<< HEAD
-            <View style={styles.buttonBox}>
-              <View style={styles.iconBox}>
-                <Icon name="close" size={13} color="blue" />
-              </View>
-              <TouchableOpacity
-                title="Add To Cart"
-                onPress={() => navigation.goBack()}
-              >
-                <Text
-                  style={{
-                    fontSize: 19,
-                    fontWeight: "bold",
-                    color: "green",
-                  }}
-                >
-                  Add To Cart
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-=======
->>>>>>> M2Ok
           <View style={{ flex: 1, textAlign: "center", padding: 5 }}>
             <Text
               style={{
@@ -204,30 +102,6 @@ export const ProductDetails = () => {
             >
               Description:
             </Text>
-<<<<<<< HEAD
-            <ScrollView>
-              <View>
-                <Text
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    borderWidth: 1,
-                    margin: 5,
-                    height: "90%",
-                    fontSize: 18,
-                    // width: "auto",
-                    backgroundColor: "lightgrey",
-                  }}
-                >
-                  {product.description}
-                </Text>
-              </View>
-            </ScrollView>
-          </View>
-        </View>
-      )}
-=======
 
             <View>
               <Text
@@ -249,7 +123,6 @@ export const ProductDetails = () => {
           </View>
         </View>
       </ScrollView>
->>>>>>> M2Ok
     </View>
   );
 };
@@ -282,13 +155,8 @@ const styles = StyleSheet.create({
   },
   cart: {
     flex: 1,
-<<<<<<< HEAD
-    width: "98%",
-    // height: 300,
-=======
     width: "95%",
     height: "97%",
->>>>>>> M2Ok
     // backgroundColor: "lightgrey",
     justifyContent: "center",
     alignItems: "center",
@@ -299,15 +167,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title: {
-    fontSize: 25,
-    marginRight: 5,
+    fontSize: 30,
     fontWeight: "bold",
     color: "black",
-<<<<<<< HEAD
-=======
     margin: 5,
     borderColor: "yellow",
->>>>>>> M2Ok
   },
   image: {
     marginTop: 15,

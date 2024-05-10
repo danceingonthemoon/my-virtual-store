@@ -138,15 +138,10 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     width: "100%",
-<<<<<<< HEAD
-    height: "7%",
-    backgroundColor: "orange",
-=======
     height: "5%",
     backgroundColor: "purple",
     alignItems: "center",
     justifyContent: "center",
->>>>>>> M2Ok
     textAlign: "center",
     fontWeight: "bold",
     marginTop: 20,
@@ -154,17 +149,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   cart: {
-<<<<<<< HEAD
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    backgroundColor: "lightblue",
-=======
     // flex: 1,
     marginBottom: 10,
     width: "100%",
     height: "96%",
->>>>>>> M2Ok
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",

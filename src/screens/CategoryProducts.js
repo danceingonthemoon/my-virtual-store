@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
 import { View, Text, StyleSheet, Image, Button } from "react-native";
 import {
   FlatList,
   ScrollView,
   TouchableOpacity,
 } from "react-native-gesture-handler";
-=======
-import { View, Text, StyleSheet, Image } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
->>>>>>> M2Ok
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ActivityIndicator } from "react-native";
@@ -20,11 +15,8 @@ export const CategoryProducts = ({ route }) => {
   });
   const [products, setProducts] = useState([]);
   const navigation = useNavigation();
-<<<<<<< HEAD
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-=======
->>>>>>> M2Ok
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -56,15 +48,9 @@ export const CategoryProducts = ({ route }) => {
     navigation.navigate("ProductDetails", { productId: product.id });
   };
 
-<<<<<<< HEAD
   const Product = ({ item, onPress, backgroundColor, color }) => (
     <TouchableOpacity onPress={onPress} style={{ backgroundColor }}>
       <View style={[styles.products, { backgroundColor: color }]}>
-=======
-  const Product = ({ item, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.products}>
->>>>>>> M2Ok
         <View style={styles.product}>
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
           <View style={styles.productInfo}>
@@ -79,7 +65,6 @@ export const CategoryProducts = ({ route }) => {
   );
   // functional component to render each product
   const renderItem = ({ item }) => {
-<<<<<<< HEAD
     const backgroundColor = item.id === selectedId ? "lightgreen" : "white";
     const color = item.id === selectedId ? "white" : "lightgreen";
 
@@ -91,9 +76,6 @@ export const CategoryProducts = ({ route }) => {
         textColor={color}
       />
     );
-=======
-    return <Product item={item} onPress={() => handleProductPress(item)} />;
->>>>>>> M2Ok
   };
   return (
     <View style={styles.container}>
@@ -175,13 +157,8 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: "center",
     justifyContent: "center",
-<<<<<<< HEAD
     height: "100%",
     marginTop: 20,
-=======
-    backgroundColor: "lightgreen",
-    borderRadius: 10,
->>>>>>> M2Ok
   },
   heading: {
     fontSize: 25,
