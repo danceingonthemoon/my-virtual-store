@@ -11,6 +11,9 @@ import { ProductDetails } from "./src/screens/ProductDetails";
 import { ShoppingCart } from "./src/screens/ShoppingCart";
 import { useSelector } from "react-redux";
 import { totalQuantity } from "./src/stores/cartSlice";
+import { SignIn } from "./src/screens/SignIn";
+import { SignUp } from "./src/screens/SignUp";
+import { MyOrders } from "./src/screens/MyOrders";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -38,6 +41,22 @@ const HomeStack = () => (
     />
   </Stack.Navigator>
 );
+const UserProfileStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
 const MyTab = () => {
   const totalQuantityValue = useSelector(totalQuantity);
   return (
@@ -59,11 +78,33 @@ const MyTab = () => {
         component={ShoppingCart}
         options={{
           headerShown: false,
-          tabBarLabel: "Cart",
+          tabBarLabel: "My Cart",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="cart" size={size} color={color} />
           ),
           tabBarBadge: totalQuantityValue ? totalQuantityValue : null,
+        }}
+      />
+      <Tab.Screen
+        name="My Orders"
+        component={MyOrders}
+        options={{
+          headerShown: false,
+          tabBarLabel: "My Orders",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="receipt" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="UserProfile"
+        component={UserProfileStack}
+        options={{
+          headerShown: false,
+          tabBarLabel: "User Profile",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
         }}
       />
     </Tab.Navigator>
