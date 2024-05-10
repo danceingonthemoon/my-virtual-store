@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { View, Text, StyleSheet, Image, Button } from "react-native";
 import {
   FlatList,
   ScrollView,
   TouchableOpacity,
 } from "react-native-gesture-handler";
+=======
+import { View, Text, StyleSheet, Image } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+>>>>>>> M2Ok
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ActivityIndicator } from "react-native";
@@ -15,8 +20,11 @@ export const CategoryProducts = ({ route }) => {
   });
   const [products, setProducts] = useState([]);
   const navigation = useNavigation();
+<<<<<<< HEAD
   const [selectedId, setSelectedId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+=======
+>>>>>>> M2Ok
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -24,7 +32,7 @@ export const CategoryProducts = ({ route }) => {
         const res = await fetch(
           `https://fakestoreapi.com/products/category/${category}`
         );
-        console.log(res.status);
+        // console.log(res.status);
         // handle error
         if (res.status !== 200) {
           throw new Error("Failed to fetch products");
@@ -42,15 +50,21 @@ export const CategoryProducts = ({ route }) => {
       }
     };
     fetchProducts();
-  }, [category]);
+  }, []);
 
   const handleProductPress = (product) => {
     navigation.navigate("ProductDetails", { productId: product.id });
   };
 
+<<<<<<< HEAD
   const Product = ({ item, onPress, backgroundColor, color }) => (
     <TouchableOpacity onPress={onPress} style={{ backgroundColor }}>
       <View style={[styles.products, { backgroundColor: color }]}>
+=======
+  const Product = ({ item, onPress }) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.products}>
+>>>>>>> M2Ok
         <View style={styles.product}>
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
           <View style={styles.productInfo}>
@@ -65,6 +79,7 @@ export const CategoryProducts = ({ route }) => {
   );
   // functional component to render each product
   const renderItem = ({ item }) => {
+<<<<<<< HEAD
     const backgroundColor = item.id === selectedId ? "lightgreen" : "white";
     const color = item.id === selectedId ? "white" : "lightgreen";
 
@@ -76,6 +91,9 @@ export const CategoryProducts = ({ route }) => {
         textColor={color}
       />
     );
+=======
+    return <Product item={item} onPress={() => handleProductPress(item)} />;
+>>>>>>> M2Ok
   };
   return (
     <View style={styles.container}>
@@ -128,17 +146,16 @@ export const CategoryProducts = ({ route }) => {
           data={products}
           renderItem={renderItem}
           keyExtractor={(product) => product.id}
-          extraData={selectedId}
         />
       )}
       <View style={styles.buttonBox}>
         <View style={styles.iconBox}>
-          <Icon name="close" size={14} />
+          <Icon name="close" size={12} />
         </View>
         <TouchableOpacity title="Back" onPress={() => navigation.goBack()}>
           <Text
             style={{
-              fontSize: 25,
+              fontSize: 17,
               fontWeight: "bold",
               color: "green",
             }}
@@ -154,18 +171,24 @@ export const CategoryProducts = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
+    margin: 10,
     alignItems: "center",
     justifyContent: "center",
+<<<<<<< HEAD
     height: "100%",
     marginTop: 20,
+=======
+    backgroundColor: "lightgreen",
+    borderRadius: 10,
+>>>>>>> M2Ok
   },
   heading: {
     fontSize: 25,
     fontWeight: "bold",
-    width: "98%",
+    width: "100%",
     height: 50,
-    backgroundColor: "orange",
+    backgroundColor: "purple",
     textAlign: "center",
     fontWeight: "bold",
     marginBottom: 10,
@@ -176,24 +199,26 @@ const styles = StyleSheet.create({
   products: {
     flex: 1,
     height: 100,
-    padding: 5,
+    width: "100%",
+    // padding: 5,
     flexDirection: "row",
     justifyContent: "space-between",
-    margin: 10,
+    // margin: 10,
     alignItems: "center",
   },
   product: {
     alignItems: "center",
-    margingVertical: 5,
+    // margingVertical: 5,
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
-
     // backgroundColor: "#f9f9f9",
     borderRadius: 10,
     borderWidth: 1,
     marginTop: 5,
     paddingHorizontal: 15,
+    borderColor: "blue",
+    borderWidth: 2,
   },
   image: {
     width: 100,
@@ -215,7 +240,7 @@ const styles = StyleSheet.create({
   productInfo: {
     flex: 1,
     flexDirection: "row",
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -226,13 +251,13 @@ const styles = StyleSheet.create({
   buttonBox: {
     flexDirection: "row",
     padding: 5,
-    width: "30%",
+    width: "24%",
+    height: "6%",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
-
+    marginTop: 20,
     borderWidth: 1,
-    borderRadius: 20,
+    borderRadius: 15,
     backgroundColor: "orange",
     marginBottom: 10,
   },
