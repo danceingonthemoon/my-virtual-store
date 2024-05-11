@@ -49,8 +49,17 @@ export const CategoryProducts = ({ route }) => {
   };
 
   const Product = ({ item, onPress, backgroundColor, color }) => (
-    <TouchableOpacity onPress={onPress} style={{ backgroundColor }}>
-      <View style={[styles.products, { backgroundColor: color }]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.products,
+        {
+          backgroundColor:
+            backgroundColor === "white" ? "transparent" : backgroundColor,
+        },
+      ]}
+    >
+      <View>
         <View style={styles.product}>
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
           <View style={styles.productInfo}>
@@ -176,12 +185,12 @@ const styles = StyleSheet.create({
   },
   products: {
     flex: 1,
-    height: 100,
+    height: 120,
     width: "100%",
     // padding: 5,
     flexDirection: "row",
     justifyContent: "space-between",
-    // margin: 10,
+    marginVertical: 5,
     alignItems: "center",
   },
   product: {
