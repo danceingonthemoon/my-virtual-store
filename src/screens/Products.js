@@ -3,11 +3,13 @@ import { View, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ActivityIndicator } from "react-native";
 
 export const Products = () => {
   const [categories, setCategories] = useState([]);
-  const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -17,7 +19,14 @@ export const Products = () => {
           throw new Error("Failed to fetch categories");
         }
         const data = await res.json();
-        setCategories(data);
+        const formattedCategories = data.map((category) =>
+          category.replace(
+            /\b\w+('s)?\b/g,
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          )
+        );
+        setCategories(formattedCategories);
+        console.log("formattedCategories", formattedCategories);
         setLoading(false);
       } catch (error) {
         console.log("Error fetching categories: ", error.message);
@@ -27,38 +36,37 @@ export const Products = () => {
   }, []);
 
   const handleCategoryPress = (category) => {
-    navigation.navigate("CategoryProducts", { category: category });
+    navigation.navigate("CategoryProducts", {
+      category: category.toLowerCase(),
+    });
   };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.heading}>Categories</Text>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : (
-          <View style={styles.categories}>
-            {categories.map((category, index) => {
-              return (
-                <View key={`${category}-${index}`} style={styles.category}>
-                  <TouchableOpacity
-                    onPress={() => handleCategoryPress(category)}
+        <View style={styles.categories}>
+          {loading ? (
+            <ActivityIndicator size="large" color="blue" />
+          ) : categories.length ? (
+            categories.map((category, index) => (
+              <View key={category} style={styles.category}>
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleCategoryPress(category)}
+                >
+                  <Text
+                    style={{ fontSize: 27, fontWeight: "bold", color: "blue" }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        color: "blue",
-                      }}
-                    >
-                      {category}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-          </View>
-        )}
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ))
+          ) : (
+            <Text>No data found.</Text>
+          )}
+        </View>
       </View>
     </GestureHandlerRootView>
   );

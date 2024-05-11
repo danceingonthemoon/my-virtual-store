@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, Image, Button } from "react-native";
+import {
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
-
+import { ActivityIndicator } from "react-native";
 export const CategoryProducts = ({ route }) => {
   const { category } = route?.params;
+  const newCategory = category.replace(/\b\w+\b/g, (word) => {
+    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+  });
   const [products, setProducts] = useState([]);
   const navigation = useNavigation();
+  const [selectedId, setSelectedId] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,15 +30,15 @@ export const CategoryProducts = ({ route }) => {
           throw new Error("Failed to fetch products");
         }
         const data = await res.json();
-        setProducts(data);
-        // console.log(data);
         const productsImages = data.map((product) => ({
           ...product,
           imageUrl: product.image,
         }));
         setProducts(productsImages);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error fetching products: ", error.message);
+        setIsLoading(false);
       }
     };
     fetchProducts();
@@ -39,14 +48,14 @@ export const CategoryProducts = ({ route }) => {
     navigation.navigate("ProductDetails", { productId: product.id });
   };
 
-  const Product = ({ item, onPress }) => (
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.products}>
+  const Product = ({ item, onPress, backgroundColor, color }) => (
+    <TouchableOpacity onPress={onPress} style={{ backgroundColor }}>
+      <View style={[styles.products, { backgroundColor: color }]}>
         <View style={styles.product}>
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
           <View style={styles.productInfo}>
             <View sstyle={styles.titleWrapper}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={[styles.title, { color }]}>{item.title}</Text>
               <Text style={styles.price}>${item.price}</Text>
             </View>
           </View>
@@ -56,13 +65,25 @@ export const CategoryProducts = ({ route }) => {
   );
   // functional component to render each product
   const renderItem = ({ item }) => {
-    return <Product item={item} onPress={() => handleProductPress(item)} />;
+    const backgroundColor = item.id === selectedId ? "blue" : "white";
+    const color = item.id === selectedId ? "blue" : "lightgreen";
+
+    return (
+      <Product
+        item={item}
+        onPress={() => handleProductPress(item)}
+        backgroundColor={backgroundColor}
+        textColor={color}
+      />
+    );
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>{category}</Text>
+      <Text style={styles.heading}>{newCategory}</Text>
 
-      {
+      {isLoading ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
         //one way to show it
         /* <View style={styles.products}>
         {products.length > 0 ? (
@@ -103,15 +124,11 @@ export const CategoryProducts = ({ route }) => {
           <Text>Loading...</Text>
         )}
       </View> */
-      }
-      {products.length > 0 ? (
         <FlatList
           data={products}
           renderItem={renderItem}
           keyExtractor={(product) => product.id}
         />
-      ) : (
-        <Text>Loading...</Text>
       )}
       <View style={styles.buttonBox}>
         <View style={styles.iconBox}>
@@ -140,8 +157,9 @@ const styles = StyleSheet.create({
     margin: 10,
     alignItems: "center",
     justifyContent: "center",
+    height: "100%",
+    marginTop: 20,
     backgroundColor: "lightgreen",
-    borderRadius: 10,
   },
   heading: {
     fontSize: 25,
@@ -186,7 +204,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   title: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
     color: "green",
   },
@@ -205,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleWrapper: {
-    alignItems: "flex-end",
+    alignItems: "flex-start",
     flexDirection: "column",
   },
   buttonBox: {

@@ -6,48 +6,76 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from "react-native";
+import { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "./axiosConfig";
+
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleEmailChange = (email) => {
+    setEmail(email);
+  };
+  const handlePasswordChange = (password) => {
+    setPassword(password);
+  };
+
+  const handleSignIn = async ({ email, password }) => {
+    try {
+      const response = await axios.post("/users/signin", { email, password });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error signing in: ", error);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Text style={styles.loginText}>Login Here</Text>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="blue"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="blue"
-          />
-        </View>
-        <View>
+      <View style={styles.logIn}>
+        <View style={styles.innerContainer}>
+          <Text style={styles.loginText}>Login Here</Text>
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="blue"
+              onChangeText={handleEmailChange}
+              value={email}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="blue"
+              onChangeText={handlePasswordChange}
+              value={password}
+            />
+          </View>
           <View style={styles.buttonContainer}>
-            <View>
-              <TouchableOpacity style={styles.button}>
-                <Ionicons name="close-circle-outline" size={24} color="black" />
-                <Text style={styles.buttonText}>Clear</Text>
-              </TouchableOpacity>
-            </View>
-
+            <TouchableOpacity
+              style={[styles.button, styles.clearButton]}
+              onPress={() => {
+                setEmail("");
+                setPassword("");
+              }}
+            >
+              <Ionicons name="close-circle-outline" size={24} color="black" />
+              <Text style={styles.buttonText}>Clear</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: "blue" }]}
+              onPress={() => handleSignIn({ email, password })}
             >
               <Ionicons name="log-in" size={24} color="white" />
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.switchTextContainer}>
-          <TouchableOpacity>
-            <Text style={styles.switchText}>
-              Switch to: sign up a new account
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.switchTextContainer}>
+            <TouchableOpacity>
+              <Text style={styles.switchText}>
+                Switch to: sign up a new account
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -59,11 +87,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "lightpink",
+    padding: 20,
+    margin: 10,
+  },
+  logIn: {
+    width: "95%",
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "lightgreen",
+    margin: 40,
+    padding: 30,
     borderRadius: 10,
+    borderWidth: 1,
   },
   innerContainer: {
-    width: "80%",
+    width: "98%",
     backgroundColor: "lightpurple",
   },
   input: {
@@ -74,7 +113,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     marginBottom: 10,
   },
   loginText: {
@@ -91,6 +130,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
+  clearButton: {
+    backgroundColor: "lightcoral",
+  },
   buttonText: {
     color: "white",
   },
@@ -99,6 +141,7 @@ const styles = StyleSheet.create({
   },
   switchText: {
     color: "blue",
+    fontSize: 25,
   },
 });
 
