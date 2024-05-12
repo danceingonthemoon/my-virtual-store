@@ -10,10 +10,12 @@ import { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "./axiosConfig";
+import { useNavigation } from "@react-navigation/native";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
   const handleEmailChange = (email) => {
     setEmail(email);
   };
@@ -22,11 +24,22 @@ const SignIn = () => {
   };
 
   const handleSignIn = async ({ email, password }) => {
+    const user = { email, password };
     try {
-      const response = await axios.post("/users/signin", { email, password });
-      console.log(response.data);
+      const response = await axios.post("/users/signin", user);
+      console.log("Sign-in successful :", response.data);
+      navigation.navigate("Products");
     } catch (error) {
-      console.error("Error signing in: ", error);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Server Error:", error.response.data);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error.request);
+      } else {
+        // Something else happened in making the request
+        console.error("Error in request:", error.message);
+      }
     }
   };
   return (
@@ -36,6 +49,7 @@ const SignIn = () => {
           <Text style={styles.loginText}>Login Here</Text>
           <View>
             <TextInput
+              id="email"
               style={styles.input}
               placeholder="Email"
               placeholderTextColor="blue"
@@ -43,6 +57,7 @@ const SignIn = () => {
               value={email}
             />
             <TextInput
+              id="password"
               style={styles.input}
               placeholder="Password"
               placeholderTextColor="blue"

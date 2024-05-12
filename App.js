@@ -39,6 +39,11 @@ const HomeStack = () => (
       component={ShoppingCart}
       options={{ headerShown: false }}
     />
+    <Stack.Screen
+      name="MyOrders"
+      component={MyOrders}
+      options={{ headerShown: false }}
+    />
   </Stack.Navigator>
 );
 const UserProfileStack = () => {
@@ -86,7 +91,7 @@ const MyTab = () => {
         }}
       />
       <Tab.Screen
-        name="My Orders"
+        name="MyOrders"
         component={MyOrders}
         options={{
           headerShown: false,

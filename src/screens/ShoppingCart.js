@@ -131,6 +131,8 @@ const styles = StyleSheet.create({
     height: "99%",
     width: "99%",
     borderRadius: 10,
+    marginTop: 20,
+    width: "100%",
   },
   heading: {
     fontSize: 32,
