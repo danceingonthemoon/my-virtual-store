@@ -5,13 +5,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "./axiosConfig";
 import { useNavigation } from "@react-navigation/native";
-
+import { SignUp } from "./SignUp";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +27,10 @@ const SignIn = () => {
   const handleSignIn = async ({ email, password }) => {
     const user = { email, password };
     try {
+      if (!email || !password) {
+        Alert.alert("Email and password are required");
+        return;
+      }
       const response = await axios.post("/users/signin", user);
       console.log("Sign-in successful :", response.data);
       navigation.navigate("Products");
@@ -73,19 +78,19 @@ const SignIn = () => {
                 setPassword("");
               }}
             >
-              <Ionicons name="close-circle-outline" size={24} color="black" />
+              <Ionicons name="close-circle-outline" size={28} color="black" />
               <Text style={styles.buttonText}>Clear</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: "blue" }]}
               onPress={() => handleSignIn({ email, password })}
             >
-              <Ionicons name="log-in" size={24} color="white" />
+              <Ionicons name="log-in" size={28} color="white" />
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.switchTextContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
               <Text style={styles.switchText}>
                 Switch to: sign up a new account
               </Text>
@@ -105,6 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: "lightpink",
     padding: 20,
     margin: 10,
+    borderRadius: 15,
   },
   logIn: {
     width: "95%",
@@ -139,24 +145,29 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
-    backgroundColor: "lightblue",
-    padding: 10,
-    alignItems: "center",
+    backgroundColor: "blue",
+    padding: 7,
+    flexDirection: "row",
     flex: 1,
-    marginRight: 10,
+    justifyContent: "center",
+    margin: 3,
   },
   clearButton: {
     backgroundColor: "lightcoral",
   },
   buttonText: {
+    fontWeight: "bold",
+    fontSize: 17,
     color: "white",
+    // alignSelf: "center",
+    padding: 5,
   },
   switchTextContainer: {
     alignItems: "center",
   },
   switchText: {
     color: "blue",
-    fontSize: 25,
+    fontSize: 17,
   },
 });
 
