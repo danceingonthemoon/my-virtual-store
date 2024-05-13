@@ -78,7 +78,7 @@ const SignIn = () => {
                 setPassword("");
               }}
             >
-              <Ionicons name="close-circle-outline" size={28} color="black" />
+              <Ionicons name="remove-circle" size={28} color="white" />
               <Text style={styles.buttonText}>Clear</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     margin: 3,
+    alignItems: "center",
   },
   clearButton: {
     backgroundColor: "lightcoral",
