@@ -9,9 +9,9 @@ import {
 import { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "./axiosConfig";
 import { useNavigation } from "@react-navigation/native";
 import { SignIn } from "./SignIn";
+import { signUp } from "../service/auth";
 
 const SignUp = () => {
   const [name, setUserName] = useState("");
@@ -28,22 +28,13 @@ const SignUp = () => {
     setUserName(name);
   };
   const handleSignUp = async ({ name, email, password }) => {
-    const user = { name, email, password };
     try {
-      const response = await axios.post("/users/signup", user);
-      console.log("Sign-Up successful :", response.data);
+      const user = { name, email, password };
+      const response = await signUp(user);
+      console.log("Sign-Up successful :", response);
       // navigation.navigate("Products");
     } catch (error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        console.error("Server Error:", error.response.data);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("No response received:", error.request);
-      } else {
-        // Something else happened in making the request
-        console.error("Error in request:", error.message);
-      }
+      console.error("Error in Sign-Up:", error.message);
     }
   };
   return (

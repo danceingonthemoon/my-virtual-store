@@ -13,7 +13,11 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "./axiosConfig";
 import { useNavigation } from "@react-navigation/native";
 import { SignUp } from "./SignUp";
+import { signIn } from "../service/auth";
+import UserProfile from "../components/userProfile";
+
 const SignIn = () => {
+  const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
@@ -25,79 +29,69 @@ const SignIn = () => {
   };
 
   const handleSignIn = async ({ email, password }) => {
-    const user = { email, password };
     try {
-      if (!email || !password) {
-        Alert.alert("Email and password are required");
-        return;
-      }
-      const response = await axios.post("/users/signin", user);
-      console.log("Sign-in successful :", response.data);
-      navigation.navigate("Products");
+      const user = { email, password };
+      const userData = await signIn(user);
+      setUser(userData);
     } catch (error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        console.error("Server Error:", error.response.data);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error("No response received:", error.request);
-      } else {
-        // Something else happened in making the request
-        console.error("Error in request:", error.message);
-      }
+      Alert.alert("Error,", error.message);
     }
   };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logIn}>
-        <View style={styles.innerContainer}>
-          <Text style={styles.loginText}>Login Here</Text>
-          <View>
-            <TextInput
-              id="email"
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="blue"
-              onChangeText={handleEmailChange}
-              value={email}
-            />
-            <TextInput
-              id="password"
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="blue"
-              onChangeText={handlePasswordChange}
-              value={password}
-            />
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.clearButton]}
-              onPress={() => {
-                setEmail("");
-                setPassword("");
-              }}
-            >
-              <Ionicons name="remove-circle" size={28} color="white" />
-              <Text style={styles.buttonText}>Clear</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "blue" }]}
-              onPress={() => handleSignIn({ email, password })}
-            >
-              <Ionicons name="log-in" size={28} color="white" />
-              <Text style={styles.buttonText}>Sign In</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.switchTextContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-              <Text style={styles.switchText}>
-                Switch to: sign up a new account
-              </Text>
-            </TouchableOpacity>
+      {!user ? (
+        <View style={styles.logIn}>
+          <View style={styles.innerContainer}>
+            <Text style={styles.loginText}>Login Here</Text>
+            <View>
+              <TextInput
+                // id="email"
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="blue"
+                onChangeText={handleEmailChange}
+                value={email}
+              />
+              <TextInput
+                // id="password"
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="blue"
+                onChangeText={handlePasswordChange}
+                value={password}
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.clearButton]}
+                onPress={() => {
+                  setEmail("");
+                  setPassword("");
+                }}
+              >
+                <Ionicons name="remove-circle" size={28} color="white" />
+                <Text style={styles.buttonText}>Clear</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "blue" }]}
+                onPress={() => handleSignIn({ email, password })}
+              >
+                <Ionicons name="log-in" size={28} color="white" />
+                <Text style={styles.buttonText}>Sign In</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.switchTextContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+                <Text style={styles.switchText}>
+                  Switch to: sign up a new account
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      ) : (
+        <UserProfile user={user} />
+      )}
     </SafeAreaView>
   );
 };
