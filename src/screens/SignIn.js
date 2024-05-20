@@ -15,11 +15,18 @@ import { useNavigation } from "@react-navigation/native";
 import { SignUp } from "./SignUp";
 import { signIn } from "../service/auth";
 import UserProfile from "../components/userProfile";
-
+import {
+  setUserDetails,
+  selectUserDetails,
+  clearUserDetails,
+} from "../stores/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCart } from "../stores/cartSlice";
 const SignIn = () => {
-  const [user, setUser] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const user = useSelector(selectUserDetails);
+  const [email, setEmail] = useState("tomL2024@gmail.com");
+  const [password, setPassword] = useState("Hillo123");
   const navigation = useNavigation();
   const handleEmailChange = (email) => {
     setEmail(email);
@@ -32,7 +39,10 @@ const SignIn = () => {
     try {
       const user = { email, password };
       const userData = await signIn(user);
-      setUser(userData);
+      // setUser(userData);
+      console.log("userData", userData);
+      dispatch(setUserDetails(userData));
+      dispatch(fetchCart());
     } catch (error) {
       Alert.alert("Error,", error.message);
     }

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  Alert,
   ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,11 +17,12 @@ import {
   cartDetails,
 } from "../stores/cartSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { postCartServer } from "../service/cart";
 
 export const ShoppingCart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector(cartDetails);
-  console.log("cartItems", cartItems);
+  // console.log("cartItems", cartItems);
   const [isLoading, setIsLoading] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -29,6 +31,34 @@ export const ShoppingCart = () => {
     setIsLoading(false);
     calculateTotalItemsAndPrice();
   }, [cartItems]);
+
+  useEffect(() => {
+    sendCartItemsToServer();
+  }, [cartItems]);
+
+  const sendCartItemsToServer = async () => {
+    try {
+      const items = cartItems.map((item) => {
+        return {
+          id: item.id,
+          price: item.price,
+          quantity: item.quantity || 1,
+          image: item.image,
+          description: item.description,
+          title: item.title,
+        };
+      });
+      const response = await postCartServer({ items: items });
+      if (response && response.success) {
+        Alert.alert("Success", "Cart updated successfully!");
+        return response;
+      } else {
+        console.log("No data received from server");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to add items to cart.");
+    }
+  };
 
   const handleIncreaseQuantity = (id) => {
     dispatch(increaseQuantity(id));

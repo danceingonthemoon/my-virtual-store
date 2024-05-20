@@ -32,7 +32,6 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchProductDataAsync.fulfilled, (state, action) => {
-        console.log("Fetch fulfilled. Payload:", action.payload);
         state.loading = false;
         state.error = null;
         state.productData = action.payload;

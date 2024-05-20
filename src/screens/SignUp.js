@@ -12,11 +12,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SignIn } from "./SignIn";
 import { signUp } from "../service/auth";
-
+import { useSelector } from "react-redux";
+import { selectUserDetails, setUserDetails } from "../stores/userSlice";
 const SignUp = () => {
   const [name, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const user = useSelector(selectUserDetails);
   const navigation = useNavigation();
   const handleEmailChange = (email) => {
     setEmail(email);
@@ -32,7 +34,11 @@ const SignUp = () => {
       const user = { name, email, password };
       const response = await signUp(user);
       console.log("Sign-Up successful :", response);
-      // navigation.navigate("Products");
+      if (response.success) {
+        dispatch(setUserDetails(response.data));
+      } else {
+        alert(response.error); // Show error message
+      }
     } catch (error) {
       console.error("Error in Sign-Up:", error.message);
     }

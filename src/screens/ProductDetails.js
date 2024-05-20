@@ -1,29 +1,25 @@
 import React, { useEffect } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-// import {
-//   fetchProductDataAsync,
-//   selectCart,
-//   addToCart,
-// } from "../stores/cartSlice";
 import { fetchProductDataAsync, selectCart } from "../stores/productSlice";
 import { addToCart } from "../stores/cartSlice";
-export const ProductDetails = () => {
+
+export const ProductDetails = ({ token }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const { productId } = route?.params;
   const dispatch = useDispatch();
   const productData = useSelector(selectCart);
-  console.log("productData", productData);
-  // handle add to cart button
+  // console.log("productData", productData);
+
   const handleAddToCart = () => {
     dispatch(addToCart(productData));
     navigation.goBack();
+    Alert.alert("Product added to cart");
   };
-
   useEffect(() => {
     // console.log("productId", productId);
     dispatch(fetchProductDataAsync(productId));

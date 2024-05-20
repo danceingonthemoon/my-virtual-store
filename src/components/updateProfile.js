@@ -10,8 +10,13 @@ import {
 // import axios from "./axiosConfig";
 import { Ionicons } from "@expo/vector-icons";
 import { updateUserProfile } from "../service/auth";
-const UpdateProfile = ({ user, onCancelUpdate }) => {
-  console.log("User in UpdateProfile:", user);
+import { selectUserDetails, updateUserToken } from "../stores/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { retrieveToken } from "../service/authStorage";
+const UpdateProfile = ({ onCancelUpdate }) => {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUserDetails);
+  // console.log("User in UpdateProfile:", user);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
@@ -29,16 +34,26 @@ const UpdateProfile = ({ user, onCancelUpdate }) => {
       return;
     }
     try {
+      const token = await retrieveToken();
+      console.log("token", token); // Ensure the token retrieval is handled correctly
       const response = await updateUserProfile({
         name,
         password,
-        token: user.token,
+        token: token,
       });
-      console.log("Profile updated successfully :", response);
+      const responseData = await response.json();
+      console.log("responseDate", responseData);
+      if (responseData.status === "error") {
+        Alert.alert("Update Failed", responseData.message);
+      } else {
+        dispatch(updateUserToken(responseData));
+        Alert.alert("Profile updated successfully");
+      }
     } catch (error) {
-      console.error("Error in request:", error.message);
+      Alert.alert("Error in request:", error.message);
     }
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Update Profile</Text>
@@ -62,7 +77,10 @@ const UpdateProfile = ({ user, onCancelUpdate }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleUpdateProfile()}
+        >
           <Ionicons name="checkmark" size={22} color="white" />
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>

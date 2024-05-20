@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import UpdateProfile from "../components/updateProfile";
-
-const UserProfile = ({ user, navigation }) => {
+import { useNavigation } from "@react-navigation/native";
+const UserProfile = ({ user }) => {
+  const navigation = useNavigation();
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [userData, setUserData] = useState(user);
   const handleUpdateProfileClick = () => {
@@ -12,7 +13,9 @@ const UserProfile = ({ user, navigation }) => {
     setUserData(user);
     setShowUpdateForm(false);
   };
-
+  const handleSignOut = () => {
+    navigation.goBack();
+  };
   return (
     <View style={styles.container}>
       {!showUpdateForm ? (
@@ -29,7 +32,10 @@ const UserProfile = ({ user, navigation }) => {
             >
               <Text style={styles.buttonText}>Update Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleSignOut()}
+            >
               <Text style={styles.buttonText}>Sign Out</Text>
             </TouchableOpacity>
           </View>

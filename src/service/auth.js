@@ -1,5 +1,6 @@
 import axios from "../screens/axiosConfig";
 import { Alert } from "react-native";
+import { storeToken, retrieveToken } from "./authStorage";
 export const signUp = async ({ name, email, password }) => {
   const user = { name, email, password };
   try {
@@ -22,33 +23,50 @@ export const signUp = async ({ name, email, password }) => {
 
 export const signIn = async ({ email, password }) => {
   const user = { email, password };
+  if (!email || !password) {
+    Alert.alert("Email and password are required");
+  }
   try {
-    if (!email || !password) {
-      Alert.alert("Email and password are required");
+    const response = await fetch("http://localhost:3000/users/signin", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(user),
+    });
+    console.log("response", response);
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      console.error("Error in signIn:", errorMessage);
+      throw new Error("SignIn failed");
     }
-    const response = await axios.post("/users/signin", user);
-    console.log("Sign-in successful :", response.data);
-    return response.data;
+    const data = await response.json();
+    console.log("SignIn successfully :", data);
+    if (data.token) {
+      await storeToken(data.token);
+    } else {
+      throw new Error("No token recieved");
+    }
+    return data;
   } catch (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
       console.error("Server Error:", error.response.data);
     } else if (error.request) {
-      // The request was made but no response was received
       console.error("No response received:", error.request);
     } else {
-      // Something else happened in making the request
       console.error("Error in request:", error.message);
     }
   }
 };
 
-export const updateUserProfile = async ({ name, password, token }) => {
+export const updateUserProfile = async ({ name, password }) => {
   if (!name || !password) {
     Alert.alert("Name and password are required");
     return;
   }
-
+  const token = await retrieveToken();
+  console.log("Token", token);
   const user = { name, password };
   try {
     const response = await fetch("http://localhost:3000/users/update", {
@@ -60,14 +78,13 @@ export const updateUserProfile = async ({ name, password, token }) => {
       },
       body: JSON.stringify(user),
     });
+    console.log("response", response);
     if (!response.ok) {
       const errorMessage = await response.text();
       console.error("Error in updateUserProfile:", errorMessage);
-      throw new Error("Update failed");
     }
-    const data = await response.json();
-    console.log("Profile updated successfully :", data);
-    return data;
+    Alert.alert("Profile updated successfully :", response);
+    return response;
   } catch (error) {
     if (error.response) {
       console.error("Server Error:", error.response.data);

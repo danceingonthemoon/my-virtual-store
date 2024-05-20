@@ -14,6 +14,10 @@ import { totalQuantity } from "./src/stores/cartSlice";
 import { SignIn } from "./src/screens/SignIn";
 import { SignUp } from "./src/screens/SignUp";
 import { MyOrders } from "./src/screens/MyOrders";
+import { Platform, Alert } from "react-native";
+// import { isAuthenticated as checkAuthenticated } from "./src/service/authStorage";
+import { useEffect, useState } from "react";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -22,7 +26,9 @@ const HomeStack = () => (
     <Stack.Screen
       name="Products"
       component={Products}
-      options={{ headerShown: false }}
+      options={{
+        headerShown: false,
+      }}
     />
     <Stack.Screen
       name="ProductDetails"
@@ -34,18 +40,9 @@ const HomeStack = () => (
       component={CategoryProducts}
       options={{ headerShown: false }}
     />
-    <Stack.Screen
-      name="ShoppingCart"
-      component={ShoppingCart}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="MyOrders"
-      component={MyOrders}
-      options={{ headerShown: false }}
-    />
   </Stack.Navigator>
 );
+
 const UserProfileStack = () => {
   return (
     <Stack.Navigator>
@@ -62,8 +59,10 @@ const UserProfileStack = () => {
     </Stack.Navigator>
   );
 };
+
 const MyTab = () => {
   const totalQuantityValue = useSelector(totalQuantity);
+
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -75,6 +74,7 @@ const MyTab = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
+
         }}
       />
 
@@ -88,6 +88,9 @@ const MyTab = () => {
             <Ionicons name="cart" size={size} color={color} />
           ),
           tabBarBadge: totalQuantityValue ? totalQuantityValue : null,
+          // listeners: ({ navigation }) => ({
+          //   tabPress: (e) => e.stopPropagation(),
+          // }),
         }}
       />
       <Tab.Screen
@@ -99,6 +102,13 @@ const MyTab = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="receipt" size={size} color={color} />
           ),
+          // listeners: ({ navigation }) => ({
+          //   tabPress: async (e) => {
+          //     if (await authCheck(navigation, "MyOrders")) {
+          //       e.preventDefault(); // Prevent default action only if not authenticated
+          //     }
+          //   },
+          // }),
         }}
       />
       <Tab.Screen

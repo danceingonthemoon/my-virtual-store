@@ -26,7 +26,6 @@ export const Products = () => {
           )
         );
         setCategories(formattedCategories);
-        console.log("formattedCategories", formattedCategories);
         setLoading(false);
       } catch (error) {
         console.log("Error fetching categories: ", error.message);
