@@ -1,90 +1,231 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
+  Image,
+  FlatList,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/core";
 
-const MyOrders = () => {
+import { fetchOrders, orderDetails } from "../stores/orderSlice";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+export const MyOrders = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const orderData = useSelector(orderDetails);
+  console.log("orderData", orderData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    dispatch(fetchOrders()).then(() => setIsLoading(false)); // Dispatch fetchOrders and update isLoading when the promise resolves
+  }, []);
+  useEffect(() => {
+    setIsLoading(false);
+    calculateTotalItemsAndPrice();
+  }, [orderData]);
+
+  const calculateTotalItemsAndPrice = () => {
+    let itemsCount = 0;
+    let totalPrice = 0;
+    if (Array.isArray(orderData)) {
+      orderData.forEach((item) => {
+        itemsCount += item.quantity;
+        totalPrice += item.price * item.quantity;
+      });
+    }
+    setTotalItems(itemsCount);
+    setTotalPrice(totalPrice);
+  };
+  const renderItem = ({ item }) => (
+    <View style={styles.product}>
+      <Image source={{ uri: item.image }} style={styles.image} />
+      <View style={styles.productInfo}>
+        <Text style={styles.title}>{item.title}</Text>
+        {/* <View style={styles.buttonBox}>
+          <TouchableOpacity onPress={() => handleDecreaseQuantity(item.id)}>
+            <Icon name="minus-circle" size={18} color="blue" />
+          </TouchableOpacity>
+          <Text style={styles.quantity}>quantity: {item.quantity}</Text>
+          <TouchableOpacity onPress={() => handleIncreaseQuantity(item.id)}>
+            <Icon name="plus-circle" size={18} color="green" />
+          </TouchableOpacity>
+        </View> */}
+      </View>
+    </View>
+  );
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Text style={styles.title}>Login Here</Text>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="blue"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry={true}
-          />
+    <View style={styles.container}>
+      <Text style={styles.heading}>My Orders</Text>
+      <View style={styles.products}>
+        <View style={styles.top}>
+          <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
+            {/* Display total items or total price here */}
+            <Text> Total Items: {orderData.length} </Text>
+            <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
+          </Text>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Clear</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity>
-            <Text style={styles.switchText}>
-              Switch to: Sign up a new account
+        <FlatList
+          data={orderData}
+          renderItem={renderItem}
+          keyExtractor={(item, index) =>
+            item.id ? item.id.toString() : index.toString()
+          }
+          contentContainerStyle={styles.products}
+        />
+        <View style={styles.buttonBox2}>
+          <View style={styles.iconBox}>
+            <Icon name="close" size={12} />
+          </View>
+          <TouchableOpacity title="Checkout" onPress={() => handleCheckOut()}>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "bold",
+                color: "green",
+              }}
+            >
+              Check Out
             </Text>
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 4,
+    padding: 5,
+    backgroundColor: "lightgreen",
+    height: "99%",
+    borderRadius: 10,
+    marginTop: 20,
+  },
+  heading: {
+    fontSize: 32,
+    fontWeight: "bold",
+    width: "100%",
+    height: "5%",
+    backgroundColor: "purple",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    fontWeight: "bold",
+    marginTop: 20,
+    color: "white",
+    borderRadius: 10,
+  },
+  cart: {
+    // flex: 1,
+    marginBottom: 10,
+    width: "100%",
+    height: "96%",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    borderRadius: 20,
+  },
+  products: {
+    marginTop: 5,
+    width: "100%",
+    flexGrow: 1,
+  },
+  product: {
+    width: "99%",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+    paddingHorizontal: 5,
+    margin: 3,
+    borderColor: "yellow",
+    borderWidth: 2,
+  },
+  image: {
+    width: 80,
+    height: 80,
+    marginRight: 20,
+    borderRadius: 10,
+  },
+  title: {
+    fontSize: 17,
+    color: "black",
+  },
+  productInfo: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  buttonBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  quantity: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "black",
+  },
+  top: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    padding: 8,
+    borderWidth: 1,
+    borderRadius: 10,
+    width: "100%",
+    backgroundColor: "blue",
+  },
+  loadingContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+  titleWrapper: {
+    alignItems: "flex-start",
+    flexDirection: "column",
   },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 5,
+  buttonBox2: {
+    flexDirection: "row",
     padding: 10,
+    width: "100%",
+    // height: "6%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: "orange",
     marginBottom: 10,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "blue",
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  switchText: {
-    color: "blue",
-    textDecorationLine: "underline",
+  iconBox: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 5,
+    margin: 7,
+    backgroundColor: "lightgreen",
   },
 });
-
-export { MyOrders };

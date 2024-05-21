@@ -28,12 +28,12 @@ export const fetchCart = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      console.log("response", response);
+
       if (!response.ok) {
         throw new Error("Failed to fetch cart");
       }
       const data = await response.json();
-      console.log("data", data);
+      // console.log("data", data);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -90,7 +90,7 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
-        console.log("action.payload", action.payload);
+        // console.log("action.payload", action.payload);
         if (action.payload.items) {
           // Assuming items are nested under 'items' key
           state.cartData = action.payload.items;

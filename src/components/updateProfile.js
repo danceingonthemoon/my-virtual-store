@@ -42,7 +42,6 @@ const UpdateProfile = ({ onCancelUpdate }) => {
         token: token,
       });
       const responseData = await response.json();
-      console.log("responseDate", responseData);
       if (responseData.status === "error") {
         Alert.alert("Update Failed", responseData.message);
       } else {

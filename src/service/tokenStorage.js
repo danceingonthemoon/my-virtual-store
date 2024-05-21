@@ -5,6 +5,7 @@ const TOKEN_KEY = "authToken";
 export const storeToken = async (token) => {
   try {
     await AsyncStorage.setItem(TOKEN_KEY, token);
+    // console.log("token", token);
   } catch (error) {
     console.error("Failed to store the auth token.", error);
   }

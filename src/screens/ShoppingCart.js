@@ -21,12 +21,12 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { postCartServer } from "../service/cartService";
 import { MyOrders } from "./MyOrders";
+import { postNewOrder } from "../service/orderService";
+import { fetchOrders } from "../stores/orderSlice";
 export const ShoppingCart = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const cartItems = useSelector(cartDetails);
-
-  console.log("cartItems", cartItems);
   const [isLoading, setIsLoading] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -37,7 +37,6 @@ export const ShoppingCart = () => {
   }, [cartItems]);
 
   useEffect(() => {
-    console.log("cartItems", cartItems);
     sendCartItemsToServer();
   }, [cartItems]);
 
@@ -53,14 +52,8 @@ export const ShoppingCart = () => {
           title: item.title,
         };
       });
-      console.log("the items are sent to the server", items);
       const response = await postCartServer({ items: items });
-      if (response && response.success) {
-        Alert.alert("Success", "Cart updated successfully!");
-        return response;
-      } else {
-        console.log("No data received from server");
-      }
+      return response;
     } catch (error) {
       Alert.alert("Error", "Failed to add items to cart.");
     }
@@ -86,7 +79,24 @@ export const ShoppingCart = () => {
     setTotalItems(itemsCount);
     setTotalPrice(totalPrice);
   };
-
+  const handleCheckOut = async () => {
+    const items = cartItems.map((item) => ({
+      prodID: item.id,
+      price: item.price,
+      quantity: item.quantity,
+      image: item.image,
+      description: item.description,
+      title: item.title,
+    }));
+    try {
+      const data = await postNewOrder({ items });
+      Alert.alert("Success", "Order placed successfully!");
+      dispatch(fetchOrders());
+      navigation.navigate("MyOrders");
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to place the order");
+    }
+  };
   const renderItem = ({ item }) => (
     <View style={styles.product}>
       <Image source={{ uri: item.image }} style={styles.image} />
@@ -154,7 +164,7 @@ export const ShoppingCart = () => {
               </View>
               <TouchableOpacity
                 title="Checkout"
-                onPress={() => navigation.navigate("MyOrders")}
+                onPress={() => handleCheckOut()}
               >
                 <Text
                   style={{

@@ -4,7 +4,7 @@ import { retrieveToken } from "./tokenStorage";
 // Post items to the server /cart
 export const postCartServer = async (items) => {
   const token = await retrieveToken();
-  console.log("items to send", items);
+  // console.log("items to send", items);
   try {
     const response = await fetch("http://localhost:3000/cart", {
       method: "PUT",
@@ -14,7 +14,7 @@ export const postCartServer = async (items) => {
       },
       body: JSON.stringify(items),
     });
-    console.log("response", response);
+    // console.log("response", response);
     if (!response.status === 200) {
       throw new Error(errorData.message || "Failed to add to cart");
     }

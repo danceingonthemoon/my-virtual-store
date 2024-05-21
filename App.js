@@ -74,7 +74,6 @@ const MyTab = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
-
         }}
       />
 

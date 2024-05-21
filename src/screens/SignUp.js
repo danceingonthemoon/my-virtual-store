@@ -33,7 +33,7 @@ const SignUp = () => {
     try {
       const user = { name, email, password };
       const response = await signUp(user);
-      console.log("Sign-Up successful :", response);
+      // console.log("Sign-Up successful :", response);
       if (response.success) {
         dispatch(setUserDetails(response.data));
       } else {

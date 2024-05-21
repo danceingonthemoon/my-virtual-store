@@ -5,7 +5,7 @@ export const signUp = async ({ name, email, password }) => {
   const user = { name, email, password };
   try {
     const response = await axios.post("/users/signup", user);
-    console.log("Sign-Up successful :", response.data);
+    // console.log("Sign-Up successful :", response.data);
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -62,7 +62,7 @@ export const updateUserProfile = async ({ name, password }) => {
     return;
   }
   const token = await retrieveToken();
-  console.log("Token", token);
+  // console.log("Token", token);
   const user = { name, password };
   try {
     const response = await fetch("http://localhost:3000/users/update", {
