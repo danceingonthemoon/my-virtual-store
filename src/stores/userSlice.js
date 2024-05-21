@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { storeToken } from "../service/authStorage";
+import { storeToken } from "../service/tokenStorage";
 const initialState = {
   userDetails: null,
   loading: false,
@@ -11,12 +11,13 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUserDetails: (state, action) => {
-      console.log("action.payload.token", action.payload.token);
       state.userDetails = action.payload;
       state.userDetails.token = action.payload.token;
     },
     clearUserDetails: (state) => {
       state.userDetails = null;
+      state.loading = false; // Reset loading state
+      state.error = null;
     },
     updateUserToken: (state, action) => {
       if (state.userDetails) {

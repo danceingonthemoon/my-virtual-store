@@ -1,6 +1,6 @@
 import axios from "../screens/axiosConfig";
 import { Alert } from "react-native";
-import { retrieveToken } from "./authStorage";
+import { retrieveToken } from "./tokenStorage";
 // Post items to the server /cart
 export const postCartServer = async (items) => {
   const token = await retrieveToken();

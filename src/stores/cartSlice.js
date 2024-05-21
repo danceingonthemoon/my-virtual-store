@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { retrieveToken } from "../service/authStorage";
+import { retrieveToken } from "../service/tokenStorage";
 
 const initialState = {
   cartData: [],
@@ -77,6 +77,11 @@ const cartSlice = createSlice({
         }
       });
     },
+    clearCartData: (state, action) => {
+      // state.cartData = [];
+      state.totalQuantity = 0;
+      state.error = null;
+    },
   },
 
   extraReducers: (builder) => {
@@ -102,7 +107,7 @@ const cartSlice = createSlice({
       });
   },
 });
-export const { addToCart, increaseQuantity, decreaseQuantity } =
+export const { addToCart, increaseQuantity, decreaseQuantity, clearCartData } =
   cartSlice.actions;
 export const cartDetails = (state) => state.cart.cartData;
 export default cartSlice.reducer;

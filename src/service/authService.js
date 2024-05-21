@@ -1,6 +1,6 @@
 import axios from "../screens/axiosConfig";
 import { Alert } from "react-native";
-import { storeToken, retrieveToken } from "./authStorage";
+import { storeToken, retrieveToken } from "./tokenStorage";
 export const signUp = async ({ name, email, password }) => {
   const user = { name, email, password };
   try {
@@ -35,14 +35,10 @@ export const signIn = async ({ email, password }) => {
       },
       body: JSON.stringify(user),
     });
-    console.log("response", response);
     if (!response.ok) {
-      const errorMessage = await response.text();
-      console.error("Error in signIn:", errorMessage);
       throw new Error("SignIn failed");
     }
     const data = await response.json();
-    console.log("SignIn successfully :", data);
     if (data.token) {
       await storeToken(data.token);
     } else {
@@ -78,10 +74,9 @@ export const updateUserProfile = async ({ name, password }) => {
       },
       body: JSON.stringify(user),
     });
-    console.log("response", response);
     if (!response.ok) {
       const errorMessage = await response.text();
-      console.error("Error in updateUserProfile:", errorMessage);
+      Alert.alert("Error in updateUserProfile:", errorMessage);
     }
     Alert.alert("Profile updated successfully :", response);
     return response;

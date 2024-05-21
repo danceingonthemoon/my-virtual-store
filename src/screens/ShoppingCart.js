@@ -10,19 +10,23 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/core";
 import {
   increaseQuantity,
   decreaseQuantity,
   cartDetails,
+  fetchCart,
 } from "../stores/cartSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { postCartServer } from "../service/cart";
-
+import { postCartServer } from "../service/cartService";
+import { MyOrders } from "./MyOrders";
 export const ShoppingCart = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const cartItems = useSelector(cartDetails);
-  // console.log("cartItems", cartItems);
+
+  console.log("cartItems", cartItems);
   const [isLoading, setIsLoading] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -33,6 +37,7 @@ export const ShoppingCart = () => {
   }, [cartItems]);
 
   useEffect(() => {
+    console.log("cartItems", cartItems);
     sendCartItemsToServer();
   }, [cartItems]);
 
@@ -42,12 +47,13 @@ export const ShoppingCart = () => {
         return {
           id: item.id,
           price: item.price,
-          quantity: item.quantity || 1,
+          quantity: item.quantity,
           image: item.image,
           description: item.description,
           title: item.title,
         };
       });
+      console.log("the items are sent to the server", items);
       const response = await postCartServer({ items: items });
       if (response && response.success) {
         Alert.alert("Success", "Cart updated successfully!");
@@ -134,7 +140,6 @@ export const ShoppingCart = () => {
                 <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
               </Text>
             </View>
-
             <FlatList
               data={cartItems}
               renderItem={renderItem}
@@ -143,6 +148,25 @@ export const ShoppingCart = () => {
               }
               contentContainerStyle={styles.products}
             />
+            <View style={styles.buttonBox2}>
+              <View style={styles.iconBox}>
+                <Icon name="close" size={12} />
+              </View>
+              <TouchableOpacity
+                title="Checkout"
+                onPress={() => navigation.navigate("MyOrders")}
+              >
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: "bold",
+                    color: "green",
+                  }}
+                >
+                  Check Out
+                </Text>
+              </TouchableOpacity>
+            </View>
           </>
         )}
       </View>
@@ -152,17 +176,15 @@ export const ShoppingCart = () => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     margin: 4,
     padding: 5,
     backgroundColor: "lightgreen",
     height: "99%",
-    width: "99%",
     borderRadius: 10,
     marginTop: 20,
-    width: "100%",
   },
   heading: {
     fontSize: 32,
@@ -192,7 +214,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: "100%",
     flexGrow: 1,
-    // marginVertical: 5,
   },
   product: {
     width: "99%",
@@ -245,5 +266,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  titleWrapper: {
+    alignItems: "flex-start",
+    flexDirection: "column",
+  },
+  buttonBox2: {
+    flexDirection: "row",
+    padding: 10,
+    width: "100%",
+    // height: "6%",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: "orange",
+    marginBottom: 10,
+  },
+  iconBox: {
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 5,
+    margin: 7,
+    backgroundColor: "lightgreen",
   },
 });

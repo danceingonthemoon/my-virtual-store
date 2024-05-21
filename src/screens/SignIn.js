@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "./axiosConfig";
 import { useNavigation } from "@react-navigation/native";
 import { SignUp } from "./SignUp";
-import { signIn } from "../service/auth";
+import { signIn } from "../service/authService";
 import UserProfile from "../components/userProfile";
 import {
   setUserDetails,
@@ -40,7 +40,6 @@ const SignIn = () => {
       const user = { email, password };
       const userData = await signIn(user);
       // setUser(userData);
-      console.log("userData", userData);
       dispatch(setUserDetails(userData));
       dispatch(fetchCart());
     } catch (error) {

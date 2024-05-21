@@ -9,10 +9,10 @@ import {
 } from "react-native";
 // import axios from "./axiosConfig";
 import { Ionicons } from "@expo/vector-icons";
-import { updateUserProfile } from "../service/auth";
+import { updateUserProfile } from "../service/authService";
 import { selectUserDetails, updateUserToken } from "../stores/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { retrieveToken } from "../service/authStorage";
+import { retrieveToken } from "../service/tokenStorage";
 const UpdateProfile = ({ onCancelUpdate }) => {
   const dispatch = useDispatch();
   const user = useSelector(selectUserDetails);

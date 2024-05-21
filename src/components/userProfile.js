@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import UpdateProfile from "../components/updateProfile";
 import { useNavigation } from "@react-navigation/native";
+import { clearUserDetails } from "../stores/userSlice";
+import { useDispatch } from "react-redux";
+import { clearCartData } from "../stores/cartSlice";
 const UserProfile = ({ user }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [userData, setUserData] = useState(user);
   const handleUpdateProfileClick = () => {
@@ -14,7 +18,9 @@ const UserProfile = ({ user }) => {
     setShowUpdateForm(false);
   };
   const handleSignOut = () => {
-    navigation.goBack();
+    dispatch(clearCartData());
+    dispatch(clearUserDetails());
+    navigation.navigate("SignIn");
   };
   return (
     <View style={styles.container}>
