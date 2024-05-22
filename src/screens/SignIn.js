@@ -22,6 +22,8 @@ import {
 } from "../stores/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../stores/cartSlice";
+import { fetchOrders } from "../stores/orderSlice";
+
 const SignIn = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUserDetails);
@@ -42,6 +44,7 @@ const SignIn = () => {
       // setUser(userData);
       dispatch(setUserDetails(userData));
       dispatch(fetchCart());
+      dispatch(fetchOrders());
     } catch (error) {
       Alert.alert("Error,", error.message);
     }

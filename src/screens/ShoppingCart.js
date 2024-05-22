@@ -17,6 +17,7 @@ import {
   decreaseQuantity,
   cartDetails,
   fetchCart,
+  clearCartData,
 } from "../stores/cartSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { postCartServer } from "../service/cartService";
@@ -92,6 +93,7 @@ export const ShoppingCart = () => {
       const data = await postNewOrder({ items });
       Alert.alert("Success", "Order placed successfully!");
       dispatch(fetchOrders());
+      dispatch(clearCartData());
       navigation.navigate("MyOrders");
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to place the order");

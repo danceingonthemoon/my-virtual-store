@@ -17,7 +17,7 @@ export const fetchOrders = createAsyncThunk(
       return rejectWithValue("User is not logged in or token is missing.");
     }
     try {
-      const response = await fetch("http://localhost:3000/orders", {
+      const response = await fetch("http://localhost:3000/orders/all", {
         // Assuming this is the correct URL
         method: "GET",
         headers: {
@@ -54,7 +54,7 @@ const orderSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
-        console.log("action.payload", action.payload);
+        console.log("action.payload for orderData", action.payload);
         state.orderData = action.payload.orders;
         state.totalQuantity = action.payload.length;
 

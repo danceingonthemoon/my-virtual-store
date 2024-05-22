@@ -25,9 +25,10 @@ export const MyOrders = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  useEffect(() => {
-    dispatch(fetchOrders()).then(() => setIsLoading(false)); // Dispatch fetchOrders and update isLoading when the promise resolves
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchOrders()).then(() => setIsLoading(false)); // Dispatch fetchOrders and update isLoading when the promise resolves
+  // }, []);
+
   useEffect(() => {
     setIsLoading(false);
     calculateTotalItemsAndPrice();
@@ -82,13 +83,18 @@ export const MyOrders = () => {
             <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
           </Text>
         </View>
-        <FlatList
+        {/* <FlatList
           data={orderData}
           renderItem={renderItem}
           keyExtractor={(item, index) =>
             item.id ? item.id.toString() : index.toString()
           }
           contentContainerStyle={styles.products}
+        /> */}
+        <FlatList
+          data={orderData}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => <Text>{item.id}</Text>}
         />
         <View style={styles.buttonBox2}>
           <View style={styles.iconBox}>
