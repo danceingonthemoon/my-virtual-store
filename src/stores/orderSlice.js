@@ -42,6 +42,25 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
+    togglePaid: (state, action) => {
+      console.log("action payload", action.payload);
+      const index = state.orderData.findIndex(
+        (order) => order.id === action.payload
+      );
+      if (index !== -1) {
+        state.orderData[index].is_paid =
+          state.orderData[index].is_paid === 1 ? 0 : 1;
+      }
+    },
+    toggleDelivered: (state, action) => {
+      const index = state.orderData.findIndex(
+        (order) => order.id === action.payload
+      );
+      if (index !== -1) {
+        state.orderData[index].is_delivered =
+          state.orderData[index].is_delivered === 1 ? 0 : 1;
+      }
+    },
     clearOrders(state) {
       //   state.orderData = [];
       state.totalQuantity = 0;
@@ -56,8 +75,10 @@ const orderSlice = createSlice({
       .addCase(fetchOrders.fulfilled, (state, action) => {
         console.log("action.payload for orderData", action.payload);
         state.orderData = action.payload.orders;
-        state.totalQuantity = action.payload.length;
-
+        state.totalQuantity = action.payload.orders.reduce(
+          (sum, order) => sum + order.item_numbers,
+          0
+        );
         state.loading = false;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
@@ -67,7 +88,6 @@ const orderSlice = createSlice({
   },
 });
 
-export const { clearOrders } = orderSlice.actions;
-export const orderDetails = (state) => state.order.orderData;
+export const { clearOrders, togglePaid, toggleDelivered } = orderSlice.actions;
 export default orderSlice.reducer;
 export const totalQuantity = (state) => state.order.totalQuantity;

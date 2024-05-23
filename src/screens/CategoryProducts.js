@@ -59,14 +59,12 @@ export const CategoryProducts = ({ route }) => {
         },
       ]}
     >
-      <View>
-        <View style={styles.product}>
-          <Image source={{ uri: item.imageUrl }} style={styles.image} />
-          <View style={styles.productInfo}>
-            <View sstyle={styles.titleWrapper}>
-              <Text style={[styles.title, { color }]}>{item.title}</Text>
-              <Text style={styles.price}>${item.price}</Text>
-            </View>
+      <View style={styles.product}>
+        <Image source={{ uri: item.imageUrl }} style={styles.image} />
+        <View style={styles.productInfo}>
+          <View sstyle={styles.titleWrapper}>
+            <Text style={[styles.title, { color }]}>{item.title}</Text>
+            <Text style={styles.price}>${item.price}</Text>
           </View>
         </View>
       </View>

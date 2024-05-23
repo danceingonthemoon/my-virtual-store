@@ -41,7 +41,6 @@ const SignIn = () => {
     try {
       const user = { email, password };
       const userData = await signIn(user);
-      // setUser(userData);
       dispatch(setUserDetails(userData));
       dispatch(fetchCart());
       dispatch(fetchOrders());

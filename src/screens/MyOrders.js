@@ -10,108 +10,171 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/core";
+import Icon from "react-native-vector-icons/Ionicons";
 
-import { fetchOrders, orderDetails } from "../stores/orderSlice";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { fetchOrders, togglePaid, toggleDelivered } from "../stores/orderSlice";
 
 export const MyOrders = () => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const orderData = useSelector(orderDetails);
-  console.log("orderData", orderData);
-  const [isLoading, setIsLoading] = useState(true);
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const orderData = useSelector((state) => state.order.orderData);
+  const [expandedIds, setExpandedIds] = useState(new Set());
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  // useEffect(() => {
-  //   dispatch(fetchOrders()).then(() => setIsLoading(false)); // Dispatch fetchOrders and update isLoading when the promise resolves
-  // }, []);
-
-  useEffect(() => {
-    setIsLoading(false);
-    calculateTotalItemsAndPrice();
-  }, [orderData]);
-
-  const calculateTotalItemsAndPrice = () => {
-    let itemsCount = 0;
-    let totalPrice = 0;
-    if (Array.isArray(orderData)) {
-      orderData.forEach((item) => {
-        itemsCount += item.quantity;
-        totalPrice += item.price * item.quantity;
-      });
+  const toggleExpand = (id) => {
+    const newSet = new Set(expandedIds);
+    if (newSet.has(id)) {
+      newSet.delete(id);
+    } else {
+      newSet.add(id);
     }
-    setTotalItems(itemsCount);
-    setTotalPrice(totalPrice);
+    setExpandedIds(newSet);
   };
-  const renderItem = ({ item }) => (
-    <View style={styles.product}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <View style={styles.productInfo}>
-        <Text style={styles.title}>{item.title}</Text>
-        {/* <View style={styles.buttonBox}>
-          <TouchableOpacity onPress={() => handleDecreaseQuantity(item.id)}>
-            <Icon name="minus-circle" size={18} color="blue" />
-          </TouchableOpacity>
-          <Text style={styles.quantity}>quantity: {item.quantity}</Text>
-          <TouchableOpacity onPress={() => handleIncreaseQuantity(item.id)}>
-            <Icon name="plus-circle" size={18} color="green" />
-          </TouchableOpacity>
-        </View> */}
-      </View>
-    </View>
-  );
 
-  if (isLoading) {
+  // Toggle the expansion of the orders list
+  const toggleHeaderExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+  // Function to toggle the paid status
+  const handlePay = (orderId) => {
+    dispatch(togglePaid(orderId));
+    const order = orderData.find((o) => o.id === orderId);
+    console.log(
+      `Order ID: ${orderId} current payment status: ${
+        order.is_paid ? "Paid" : "Not Paid"
+      }`
+    );
+  };
+  const handleDeliver = (orderId) => {
+    dispatch(toggleDelivered(orderId));
+    console.log("orderId", orderId);
+  };
+
+  const renderItem = ({ item }) => {
+    const items = JSON.parse(item.order_items);
+    const isOrderExpanded = expandedIds.has(item.id);
+
+    // console.log(
+    //   "Render item:",
+    //   item.id,
+    //   "Paid:",
+    //   item.is_paid,
+    //   "Delivered:",
+    //   item.is_delivered
+    // );
+
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="blue" />
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={styles.orderHeader}
+          onPress={() => toggleExpand(item.id)}
+        >
+          <Text style={styles.orderHeaderText}>
+            Order ID: {item.id} - Items: {item.item_numbers} - Total: $
+            {(item.total_price / 100).toFixed(2)}
+          </Text>
+          <Icon
+            name={isOrderExpanded ? "caret-up" : "caret-down"}
+            size={20}
+            color="#FF69B4"
+          />
+        </TouchableOpacity>
+        {isOrderExpanded && (
+          <>
+            <FlatList
+              data={items}
+              renderItem={({ item }) => (
+                <View style={styles.product}>
+                  <Image source={{ uri: item.image }} style={styles.image} />
+                  <View style={styles.productInfo}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Text>Quantity: {item.quantity}</Text>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item, idx) => idx.toString()}
+            />
+            {!item.is_paid && !item.is_delivered && (
+              <TouchableOpacity
+                style={styles.payButton}
+                onPress={() => handlePay(item.id)} // Button to trigger payment
+              >
+                <Text style={styles.payButtonText}>Pay Now</Text>
+              </TouchableOpacity>
+            )}
+            {item.is_paid && !item.is_delivered && (
+              <TouchableOpacity
+                style={styles.payButton}
+                onPress={() => handleDeliver(item.id)} // Button to trigger payment
+              >
+                <Text style={styles.payButtonText}>Receive Now</Text>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
       </View>
     );
-  }
-
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>My Orders</Text>
       <View style={styles.products}>
-        <View style={styles.top}>
-          <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
-            {/* Display total items or total price here */}
-            <Text> Total Items: {orderData.length} </Text>
-            <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
+        <TouchableOpacity style={styles.heading} onPress={toggleHeaderExpand}>
+          <Text style={styles.heading}>
+            New Orders :
+            {orderData.filter((o) => !o.is_paid && !o.is_delivered).length}
           </Text>
-        </View>
-        {/* <FlatList
-          data={orderData}
-          renderItem={renderItem}
-          keyExtractor={(item, index) =>
-            item.id ? item.id.toString() : index.toString()
-          }
-          contentContainerStyle={styles.products}
-        /> */}
-        <FlatList
-          data={orderData}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <Text>{item.id}</Text>}
-        />
-        <View style={styles.buttonBox2}>
-          <View style={styles.iconBox}>
-            <Icon name="close" size={12} />
-          </View>
-          <TouchableOpacity title="Checkout" onPress={() => handleCheckOut()}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "bold",
-                color: "green",
-              }}
-            >
-              Check Out
-            </Text>
-          </TouchableOpacity>
-        </View>
+          <Icon
+            name={isExpanded ? "caret-up" : "caret-down"}
+            size={20}
+            color="#FF69B4"
+          />
+        </TouchableOpacity>
+        {isExpanded && (
+          <FlatList
+            data={orderData.filter((o) => !o.is_paid)}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            // contentContainerStyle={styles.product}
+          />
+        )}
+        <TouchableOpacity style={styles.heading} onPress={toggleHeaderExpand}>
+          <Text style={styles.heading}>
+            Paid Orders :
+            {orderData.filter((o) => o.is_paid && !o.is_delivered).length}
+          </Text>
+          <Icon
+            name={isExpanded ? "caret-up" : "caret-down"}
+            size={20}
+            color="#FF69B4"
+          />
+        </TouchableOpacity>
+        {isExpanded && (
+          <FlatList
+            data={orderData.filter((o) => o.is_paid && !o.is_delivered)}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            // contentContainerStyle={styles.product}
+          />
+        )}
+        <TouchableOpacity style={styles.heading} onPress={toggleHeaderExpand}>
+          <Text style={styles.heading}>
+            Delivered Orders :
+            {orderData.filter((o) => o.is_paid && o.is_delivered).length}
+          </Text>
+          <Icon
+            name={isExpanded ? "caret-up" : "caret-down"}
+            size={20}
+            color="#FF69B4"
+          />
+        </TouchableOpacity>
+        {isExpanded && (
+          <FlatList
+            data={orderData.filter((o) => o.is_paid && o.is_delivered)}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            // contentContainerStyle={styles.product}
+          />
+        )}
       </View>
     </View>
   );
@@ -122,52 +185,62 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    margin: 4,
-    padding: 5,
-    backgroundColor: "lightgreen",
+    backgroundColor: "pink",
     height: "99%",
     borderRadius: 10,
-    marginTop: 20,
+
+    padding: 10,
+    width: "99%",
   },
   heading: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
-    width: "100%",
-    height: "5%",
-    backgroundColor: "purple",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    fontWeight: "bold",
-    marginTop: 20,
     color: "white",
+    backgroundColor: "lightgreen",
+    width: "99%",
+    textAlign: "center",
+    padding: 10,
+    marginTop: 10,
     borderRadius: 10,
   },
-  cart: {
-    // flex: 1,
-    marginBottom: 10,
-    width: "100%",
-    height: "96%",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    borderRadius: 20,
+  orderHeader: {
+    width: "99%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "lightyellow",
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  orderContainer: {
+    justifyContent: "space-evenly",
+    padding: 5,
+    // margin: 5,
+    borderWidth: 1,
+    borderRadius: 10,
+    width: "99%",
+    backgroundColor: "blue",
+  },
+  orderHeaderText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
   products: {
     marginTop: 5,
-    width: "100%",
+    width: "98%",
     flexGrow: 1,
+    padding: 5,
   },
   product: {
-    width: "99%",
+    width: "98%",
     borderWidth: 1,
-    padding: 10,
+    padding: 5,
     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     marginVertical: 5,
     paddingHorizontal: 5,
-    margin: 3,
+    // margin: 3,
     borderColor: "yellow",
     borderWidth: 2,
   },
@@ -177,61 +250,26 @@ const styles = StyleSheet.create({
     marginRight: 20,
     borderRadius: 10,
   },
-  title: {
-    fontSize: 17,
-    color: "black",
-  },
   productInfo: {
     flex: 1,
-    flexDirection: "column",
     justifyContent: "space-between",
   },
-  buttonBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  quantity: {
+  title: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "black",
   },
-  top: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    padding: 8,
-    borderWidth: 1,
-    borderRadius: 10,
-    width: "100%",
-    backgroundColor: "blue",
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  titleWrapper: {
-    alignItems: "flex-start",
-    flexDirection: "column",
-  },
-  buttonBox2: {
-    flexDirection: "row",
+  payButton: {
     padding: 10,
-    width: "100%",
-    // height: "6%",
+    width: "40%",
+    marginRight: 10,
+    marginLeft: 10,
+    backgroundColor: "blue",
+    borderRadius: 5,
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    borderWidth: 1,
-    borderRadius: 15,
-    backgroundColor: "orange",
-    marginBottom: 10,
+    justifyContent: "flex-start",
   },
-  iconBox: {
-    borderWidth: 1,
-    borderRadius: 20,
-    padding: 5,
-    margin: 7,
-    backgroundColor: "lightgreen",
+  payButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
