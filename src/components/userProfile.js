@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { clearUserDetails } from "../stores/userSlice";
 import { useDispatch } from "react-redux";
 import { clearCartData } from "../stores/cartSlice";
+// import { clearOrders } from "../stores/orderSlice";
 const UserProfile = ({ user }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -19,7 +20,9 @@ const UserProfile = ({ user }) => {
   };
   const handleSignOut = () => {
     dispatch(clearCartData());
+    // dispatch(clearOrders());
     dispatch(clearUserDetails());
+
     navigation.navigate("SignIn");
   };
   return (

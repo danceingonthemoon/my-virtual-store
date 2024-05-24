@@ -11,6 +11,7 @@ import { ProductDetails } from "./src/screens/ProductDetails";
 import { ShoppingCart } from "./src/screens/ShoppingCart";
 import { useSelector } from "react-redux";
 import { totalQuantity } from "./src/stores/cartSlice";
+import { totalQuantityOrder } from "./src/stores/orderSlice";
 import { SignIn } from "./src/screens/SignIn";
 import { SignUp } from "./src/screens/SignUp";
 import { MyOrders } from "./src/screens/MyOrders";
@@ -62,7 +63,7 @@ const UserProfileStack = () => {
 
 const MyTab = () => {
   const totalQuantityValue = useSelector(totalQuantity);
-
+  const totalOrderQuantity = useSelector(totalQuantityOrder);
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -87,9 +88,6 @@ const MyTab = () => {
             <Ionicons name="cart" size={size} color={color} />
           ),
           tabBarBadge: totalQuantityValue ? totalQuantityValue : null,
-          // listeners: ({ navigation }) => ({
-          //   tabPress: (e) => e.stopPropagation(),
-          // }),
         }}
       />
       <Tab.Screen
@@ -101,13 +99,7 @@ const MyTab = () => {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="receipt" size={size} color={color} />
           ),
-          // listeners: ({ navigation }) => ({
-          //   tabPress: async (e) => {
-          //     if (await authCheck(navigation, "MyOrders")) {
-          //       e.preventDefault(); // Prevent default action only if not authenticated
-          //     }
-          //   },
-          // }),
+          tabBarBadge: totalOrderQuantity ? totalOrderQuantity : null,
         }}
       />
       <Tab.Screen

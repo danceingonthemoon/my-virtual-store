@@ -158,7 +158,7 @@ export const ShoppingCart = () => {
               keyExtractor={(item, index) =>
                 item.id ? item.id.toString() : index.toString()
               }
-              contentContainerStyle={styles.products}
+              contentContainerStyle={styles.cartItemsContainer}
             />
             <View style={styles.buttonBox2}>
               <View style={styles.iconBox}>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     margin: 4,
     padding: 5,
     backgroundColor: "lightgreen",
-    height: "99%",
+    width: "100%",
     borderRadius: 10,
     marginTop: 20,
   },
@@ -212,22 +212,25 @@ const styles = StyleSheet.create({
     color: "white",
     borderRadius: 10,
   },
-  cart: {
-    // flex: 1,
-    marginBottom: 10,
-    width: "100%",
-    height: "96%",
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-    borderRadius: 20,
-  },
+  // cart: {
+  //   // flex: 1,
+  //   marginBottom: 10,
+  //   width: "100%",
+  //   height: "96%",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   textAlign: "center",
+  //   borderRadius: 20,
+  // },
   products: {
-    marginTop: 5,
+    marginTop: 10,
     width: "100%",
     flexGrow: 1,
+    alignItems: "center",
+    // justifyContent: "center",
   },
   product: {
+    flexGrow: 1,
     width: "99%",
     borderWidth: 1,
     padding: 10,
@@ -252,7 +255,7 @@ const styles = StyleSheet.create({
   },
   productInfo: {
     flex: 1,
-    flexDirection: "column",
+    // flexDirection: "column",
     justifyContent: "space-between",
   },
   buttonBox: {
@@ -286,7 +289,7 @@ const styles = StyleSheet.create({
   buttonBox2: {
     flexDirection: "row",
     padding: 10,
-    width: "100%",
+    width: "40%",
     // height: "6%",
     alignItems: "center",
     justifyContent: "center",
@@ -302,5 +305,8 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 7,
     backgroundColor: "lightgreen",
+  },
+  cartItemsContainer: {
+    width: "100%",
   },
 });

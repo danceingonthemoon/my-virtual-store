@@ -19,7 +19,7 @@ export const MyOrders = () => {
   const orderData = useSelector((state) => state.order.orderData);
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [isExpanded, setIsExpanded] = useState(false);
-
+  // set method used to delete id and add if condition changes
   const toggleExpand = (id) => {
     const newSet = new Set(expandedIds);
     if (newSet.has(id)) {
@@ -52,18 +52,13 @@ export const MyOrders = () => {
   const renderItem = ({ item }) => {
     const items = JSON.parse(item.order_items);
     const isOrderExpanded = expandedIds.has(item.id);
-
-    // console.log(
-    //   "Render item:",
-    //   item.id,
-    //   "Paid:",
-    //   item.is_paid,
-    //   "Delivered:",
-    //   item.is_delivered
-    // );
-
     return (
-      <View style={{ flex: 1 }}>
+      <View
+        style={{
+          width: "100%",
+          justifyContent: "center",
+        }}
+      >
         <TouchableOpacity
           style={styles.orderHeader}
           onPress={() => toggleExpand(item.id)}
@@ -119,15 +114,16 @@ export const MyOrders = () => {
       <Text style={styles.heading}>My Orders</Text>
       <View style={styles.products}>
         <TouchableOpacity style={styles.heading} onPress={toggleHeaderExpand}>
-          <Text style={styles.heading}>
+          <Text style={styles.heading1}>
             New Orders :
             {orderData.filter((o) => !o.is_paid && !o.is_delivered).length}
+            <Icon
+              name={isExpanded ? "caret-up" : "caret-down"}
+              size={20}
+              color="#FF69B4"
+              style={styles.iconStyle}
+            />
           </Text>
-          <Icon
-            name={isExpanded ? "caret-up" : "caret-down"}
-            size={20}
-            color="#FF69B4"
-          />
         </TouchableOpacity>
         {isExpanded && (
           <FlatList
@@ -138,15 +134,16 @@ export const MyOrders = () => {
           />
         )}
         <TouchableOpacity style={styles.heading} onPress={toggleHeaderExpand}>
-          <Text style={styles.heading}>
+          <Text style={styles.heading1}>
             Paid Orders :
             {orderData.filter((o) => o.is_paid && !o.is_delivered).length}
+            <Icon
+              name={isExpanded ? "caret-up" : "caret-down"}
+              size={20}
+              color="#FF69B4"
+              style={styles.iconStyle}
+            />
           </Text>
-          <Icon
-            name={isExpanded ? "caret-up" : "caret-down"}
-            size={20}
-            color="#FF69B4"
-          />
         </TouchableOpacity>
         {isExpanded && (
           <FlatList
@@ -157,15 +154,16 @@ export const MyOrders = () => {
           />
         )}
         <TouchableOpacity style={styles.heading} onPress={toggleHeaderExpand}>
-          <Text style={styles.heading}>
+          <Text style={styles.heading1}>
             Delivered Orders :
             {orderData.filter((o) => o.is_paid && o.is_delivered).length}
+            <Icon
+              name={isExpanded ? "caret-up" : "caret-down"}
+              size={20}
+              color="#FF69B4"
+              style={styles.iconStyle}
+            />
           </Text>
-          <Icon
-            name={isExpanded ? "caret-up" : "caret-down"}
-            size={20}
-            color="#FF69B4"
-          />
         </TouchableOpacity>
         {isExpanded && (
           <FlatList
@@ -188,20 +186,32 @@ const styles = StyleSheet.create({
     backgroundColor: "pink",
     height: "99%",
     borderRadius: 10,
-
     padding: 10,
-    width: "99%",
+    width: "100%",
+    margin: 10,
   },
   heading: {
-    fontSize: 28,
+    fontSize: 30,
+    height: "8%",
     fontWeight: "bold",
     color: "white",
-    backgroundColor: "lightgreen",
+    backgroundColor: "purple",
     width: "99%",
     textAlign: "center",
-    padding: 10,
+    padding: 5,
     marginTop: 10,
     borderRadius: 10,
+  },
+  heading1: {
+    margin: 5,
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "blue",
+    justifyContent: "space-evenly",
+    textAlign: "center",
+    backgroundColor: "lightgreen",
+    // marginHorizontal: 10,
+    paddingHorizontal: 10,
   },
   orderHeader: {
     width: "99%",
@@ -227,19 +237,18 @@ const styles = StyleSheet.create({
   },
   products: {
     marginTop: 5,
-    width: "98%",
+    width: "100%",
     flexGrow: 1,
     padding: 5,
   },
   product: {
-    width: "98%",
+    width: "100%",
     borderWidth: 1,
     padding: 5,
     borderRadius: 10,
     flexDirection: "row",
-    alignItems: "center",
     marginVertical: 5,
-    paddingHorizontal: 5,
+    // paddingHorizontal: 5,
     // margin: 3,
     borderColor: "yellow",
     borderWidth: 2,
@@ -271,5 +280,8 @@ const styles = StyleSheet.create({
   payButtonText: {
     color: "white",
     fontWeight: "bold",
+  },
+  iconStyle: {
+    marginRight: 10,
   },
 });

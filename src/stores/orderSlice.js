@@ -25,12 +25,12 @@ export const fetchOrders = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      console.log("response", response);
+      // console.log("response", response);
       if (!response.ok) {
         throw new Error("Failed to fetch orders");
       }
       const data = await response.json();
-      console.log("data", data);
+      // console.log("data", data);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -43,13 +43,16 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     togglePaid: (state, action) => {
-      console.log("action payload", action.payload);
       const index = state.orderData.findIndex(
         (order) => order.id === action.payload
       );
       if (index !== -1) {
         state.orderData[index].is_paid =
           state.orderData[index].is_paid === 1 ? 0 : 1;
+        console.log(
+          "paid Status",
+          state.orderData[index].is_paid ? "paid" : "Not paid"
+        );
       }
     },
     toggleDelivered: (state, action) => {
@@ -62,8 +65,8 @@ const orderSlice = createSlice({
       }
     },
     clearOrders(state) {
-      //   state.orderData = [];
       state.totalQuantity = 0;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -73,7 +76,6 @@ const orderSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
-        console.log("action.payload for orderData", action.payload);
         state.orderData = action.payload.orders;
         state.totalQuantity = action.payload.orders.reduce(
           (sum, order) => sum + order.item_numbers,
@@ -90,4 +92,4 @@ const orderSlice = createSlice({
 
 export const { clearOrders, togglePaid, toggleDelivered } = orderSlice.actions;
 export default orderSlice.reducer;
-export const totalQuantity = (state) => state.order.totalQuantity;
+export const totalQuantityOrder = (state) => state.order.orderData.length;
