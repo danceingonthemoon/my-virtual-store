@@ -11,15 +11,21 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
-
-import { fetchOrders, togglePaid, toggleDelivered } from "../stores/orderSlice";
+import {
+  updateOrderStatus,
+  togglePaid,
+  toggleDelivered,
+} from "../stores/orderSlice";
 
 export const MyOrders = () => {
   const dispatch = useDispatch();
   const orderData = useSelector((state) => state.order.orderData);
+  // console.log("orderData", orderData);
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [isExpanded, setIsExpanded] = useState(false);
+
   // set method used to delete id and add if condition changes
+
   const toggleExpand = (id) => {
     const newSet = new Set(expandedIds);
     if (newSet.has(id)) {
@@ -29,24 +35,57 @@ export const MyOrders = () => {
     }
     setExpandedIds(newSet);
   };
-
   // Toggle the expansion of the orders list
   const toggleHeaderExpand = () => {
     setIsExpanded(!isExpanded);
   };
   // Function to toggle the paid status
-  const handlePay = (orderId) => {
-    dispatch(togglePaid(orderId));
-    const order = orderData.find((o) => o.id === orderId);
-    console.log(
-      `Order ID: ${orderId} current payment status: ${
-        order.is_paid ? "Paid" : "Not Paid"
-      }`
-    );
+  const handlePay = async (orderId) => {
+    const order = orderData.find((order) => order.id === orderId);
+    if (order) {
+      try {
+        const response = await dispatch(
+          updateOrderStatus({
+            orderId: order.id,
+            isPaid: 1, // Set isPaid to 1
+            isDelivered: order.is_delivered,
+          })
+        ).unwrap();
+        if (response.status === "ok") {
+          dispatch(togglePaid(orderId));
+        }
+        Alert.alert("Success", "Payment status updated.");
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          error.message || "Failed to update payment status."
+        );
+      }
+    }
   };
-  const handleDeliver = (orderId) => {
-    dispatch(toggleDelivered(orderId));
-    console.log("orderId", orderId);
+
+  const handleDeliver = async (orderId) => {
+    const order = orderData.find((order) => order.id === orderId);
+    if (order) {
+      try {
+        const response = await dispatch(
+          updateOrderStatus({
+            orderId: order.id,
+            isPaid: order.is_paid,
+            isDelivered: 1,
+          })
+        ).unwrap();
+        if (response.status === "OK") {
+          dispatch(toggleDelivered(orderId));
+        }
+        Alert.alert("Success", "Payment status updated.");
+      } catch (error) {
+        Alert.alert(
+          "Error",
+          error.message || "Failed to update payment status."
+        );
+      }
+    }
   };
 
   const renderItem = ({ item }) => {
@@ -192,7 +231,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 30,
-    height: "8%",
+    height: "9%",
     fontWeight: "bold",
     color: "white",
     backgroundColor: "purple",

@@ -22,7 +22,11 @@ import {
 } from "../stores/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../stores/cartSlice";
-import { fetchOrders } from "../stores/orderSlice";
+import {
+  fetchOrders,
+  fillOrders,
+  // fillOrdersFromFetch,
+} from "../stores/orderSlice";
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -36,7 +40,15 @@ const SignIn = () => {
   const handlePasswordChange = (password) => {
     setPassword(password);
   };
-
+  // const restoreOrders = async ({ token }) => {
+  //   dispatch(fillOrdersFromFetch(token));
+  //   // const data = fetchOrders({ items: data.items });
+  //   // if (data.status === "OK") {
+  //   //   dispatch(fillOrders({ items: data.orders }));
+  //   // } else {
+  //   //   Alert.alert("Failed to restore orders:" + data.message);
+  //   // }
+  // };
   const handleSignIn = async ({ email, password }) => {
     try {
       const user = { email, password };
@@ -44,6 +56,7 @@ const SignIn = () => {
       dispatch(setUserDetails(userData));
       dispatch(fetchCart());
       dispatch(fetchOrders());
+      // await restoreOrders();
     } catch (error) {
       Alert.alert("Error,", error.message);
     }

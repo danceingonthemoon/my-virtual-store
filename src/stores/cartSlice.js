@@ -78,9 +78,9 @@ const cartSlice = createSlice({
       });
     },
     clearCartData: (state, action) => {
-      // state.cartData = [];
+      state.cartData = [];
       state.totalQuantity = 0;
-      state.error = null;
+      // state.error = null;
     },
   },
 

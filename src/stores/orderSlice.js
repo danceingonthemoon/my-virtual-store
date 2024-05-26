@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { retrieveToken } from "../service/tokenStorage";
-
+import { postNewOrder } from "../service/orderService";
+import { updateOrder } from "../service/orderService";
 const initialState = {
   orderData: [],
   loading: false,
@@ -18,10 +19,10 @@ export const fetchOrders = createAsyncThunk(
     }
     try {
       const response = await fetch("http://localhost:3000/orders/all", {
-        // Assuming this is the correct URL
         method: "GET",
+        mode: "cors",
         headers: {
-          Authorization: `Bearer ${token}`, // Ensure correct token usage
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -32,6 +33,19 @@ export const fetchOrders = createAsyncThunk(
       const data = await response.json();
       // console.log("data", data);
       return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateOrderStatus = createAsyncThunk(
+  "order/updateOrderStatus",
+  async ({ orderId, isPaid, isDelivered }, { rejectWithValue }) => {
+    try {
+      const data = await updateOrder(orderId, isPaid, isDelivered);
+      console.log("data", data);
+      return { orderId, isPaid, isDelivered };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -49,10 +63,6 @@ const orderSlice = createSlice({
       if (index !== -1) {
         state.orderData[index].is_paid =
           state.orderData[index].is_paid === 1 ? 0 : 1;
-        console.log(
-          "paid Status",
-          state.orderData[index].is_paid ? "paid" : "Not paid"
-        );
       }
     },
     toggleDelivered: (state, action) => {
@@ -65,6 +75,7 @@ const orderSlice = createSlice({
       }
     },
     clearOrders(state) {
+      state.orderData = [];
       state.totalQuantity = 0;
       state.error = null;
     },
@@ -85,11 +96,42 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        const { orderId, isPaid, isDelivered } = action.payload;
+        const orderIndex = state.orderData.findIndex(
+          (order) => order.id === orderId
+        );
+        if (orderIndex !== -1) {
+          state.orderData[orderIndex].is_paid = isPaid;
+          state.orderData[orderIndex].is_delivered = isDelivered;
+        }
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });
 
 export const { clearOrders, togglePaid, toggleDelivered } = orderSlice.actions;
 export default orderSlice.reducer;
-export const totalQuantityOrder = (state) => state.order.orderData.length;
+// export const fillOrdersFromFetch = async (dispatch) => {
+//   try {
+//     const token = await retrieveToken();
+//     const data = await postNewOrder();
+//     console.log("data", data);
+//     dispatch(fillOrders({ orders: data.orders }));
+//   } catch (e) {
+//     console.error("Error in filling orders");
+//   }
+// }; why not work??
+export const totalQuantityOrder = (state) => {
+  return state.order.orderData.reduce((sum, order) => {
+    if (order.is_paid === 0 && order.is_delivered === 0) {
+      //call back sum
+      return sum + 1;
+    }
+    return sum;
+  }, 0);
+};
