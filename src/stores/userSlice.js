@@ -19,6 +19,11 @@ const userSlice = createSlice({
       state.loading = false; // Reset loading state
       state.error = null;
     },
+    updateUserDetails: (state, action) => {
+      if (state.userDetails) {
+        state.userDetails = { ...state.userDetails, ...action.payload };
+      }
+    },
     updateUserToken: (state, action) => {
       if (state.userDetails) {
         state.userDetails.token = action.payload;
@@ -27,7 +32,13 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUserDetails, clearUserDetails, updateUserToken } =
-  userSlice.actions;
+export const {
+  setUserDetails,
+  clearUserDetails,
+  updateUserToken,
+  updateUserDetails,
+} = userSlice.actions;
 export const selectUserDetails = (state) => state.user.userDetails;
+export const userID = (state) => state.user.userDetails?.id;
+
 export default userSlice.reducer;

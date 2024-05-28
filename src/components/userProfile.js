@@ -1,25 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import UpdateProfile from "../components/updateProfile";
 import { useNavigation } from "@react-navigation/native";
-import { clearUserDetails } from "../stores/userSlice";
-import { useDispatch } from "react-redux";
-import { clearCartData } from "../stores/cartSlice";
+import { clearUserDetails, selectUserDetails } from "../stores/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { cartDetails, clearCartData } from "../stores/cartSlice";
 import { clearOrders } from "../stores/orderSlice";
 const UserProfile = ({ user }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const cartItems = useSelector(cartDetails);
+  // const user = useSelector(selectUserDetails);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
-  const [userData, setUserData] = useState(user);
+
   const handleUpdateProfileClick = () => {
     setShowUpdateForm(true);
   };
   const handleCancelUpdate = () => {
-    setUserData(user);
     setShowUpdateForm(false);
   };
-  const handleSignOut = () => {
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]); // only log when `user` changes
+
+  const handleSignOut = async () => {
     dispatch(clearCartData());
+    dispatch({
+      type: "cart/saveCartToServer",
+      async: true,
+      payload: cartItems,
+    });
+    console.log("cart items after sign out :", cartItems);
     dispatch(clearOrders());
     dispatch(clearUserDetails());
     navigation.navigate("SignIn");

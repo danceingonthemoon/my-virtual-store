@@ -4,7 +4,7 @@ import { retrieveToken } from "./tokenStorage";
 // Post items to the server /cart
 export const postCartServer = async (items) => {
   const token = await retrieveToken();
-  // console.log("items to send", items);
+  // const { id, count, price } = items;
   try {
     const response = await fetch("http://localhost:3000/cart", {
       method: "PUT",
@@ -12,21 +12,15 @@ export const postCartServer = async (items) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(items),
+      body: JSON.stringify({ items: items }),
     });
-    // console.log("response", response);
+    console.log("response for cartService", response);
     if (!response.status === 200) {
       throw new Error(errorData.message || "Failed to add to cart");
     }
     return await response.json();
   } catch (error) {
-    if (error instanceof TypeError) {
-      // Network error or CORS issue
-      Alert.alert("Network Error", "Failed to connect to server");
-    } else {
-      // Other errors
-      Alert.alert("Error", error.message || "Failed to add items to cart");
-    }
-    throw error; // Re-throw the error for higher-level handling if needed
+    Alert.alert("Error", error.message || "Failed to add items to cart");
+    throw error;
   }
 };

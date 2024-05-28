@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Image, Alert } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
@@ -6,20 +6,57 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductDataAsync, selectCart } from "../stores/productSlice";
 import { addToCart } from "../stores/cartSlice";
-
+import { cartDetails } from "../stores/cartSlice";
+import { postCartServer } from "../service/cartService";
 export const ProductDetails = ({ token }) => {
   const route = useRoute();
   const navigation = useNavigation();
+  const cartItems = useSelector(cartDetails);
+  // console.log("cart itmes", cartItems);
   const { productId } = route?.params;
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
   const productData = useSelector(selectCart);
   // console.log("productData", productData);
 
-  const handleAddToCart = () => {
-    dispatch(addToCart(productData));
-    navigation.goBack();
-    Alert.alert("Product added to cart");
+  useEffect(() => {
+    const syncCartWithServer = async () => {
+      try {
+        await postCartServer(cartItems);
+        console.log("Cart items synced with server:", cartItems);
+      } catch (error) {
+        console.error("Failed to sync cart with server:", error);
+      }
+    };
+    if (cartItems.length > 0) {
+      syncCartWithServer();
+    }
+    setIsLoading(false);
+  }, [cartItems]);
+  const handleAddToCart = async () => {
+    try {
+      // Add the product to the Redux store
+      dispatch(addToCart(productData));
+      // Wait for the next tick to allow Redux state to update
+      const response = await postCartServer({ cartItems });
+      if (response.status === "OK") {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        dispatch({
+          type: "cart/saveCartToServer",
+          async: true,
+          payload: cartItems,
+        });
+      }
+      console.log("cart items after clicking addtocart button", cartItems);
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        error.message || "Failed to add the product to the cart."
+      );
+    }
   };
+
   useEffect(() => {
     // console.log("productId", productId);
     dispatch(fetchProductDataAsync(productId));

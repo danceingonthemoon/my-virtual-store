@@ -11,12 +11,8 @@ const initialState = {
 
 export const fetchOrders = createAsyncThunk(
   "order/fetchOrders",
-  async (_, { getState, rejectWithValue }) => {
-    const { user } = getState();
+  async (_, { rejectWithValue }) => {
     const token = await retrieveToken();
-    if (!user.userDetails || !user.userDetails.token) {
-      return rejectWithValue("User is not logged in or token is missing.");
-    }
     try {
       const response = await fetch("http://localhost:3000/orders/all", {
         method: "GET",
@@ -26,7 +22,6 @@ export const fetchOrders = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-      // console.log("response", response);
       if (!response.ok) {
         throw new Error("Failed to fetch orders");
       }
@@ -116,16 +111,7 @@ const orderSlice = createSlice({
 
 export const { clearOrders, togglePaid, toggleDelivered } = orderSlice.actions;
 export default orderSlice.reducer;
-// export const fillOrdersFromFetch = async (dispatch) => {
-//   try {
-//     const token = await retrieveToken();
-//     const data = await postNewOrder();
-//     console.log("data", data);
-//     dispatch(fillOrders({ orders: data.orders }));
-//   } catch (e) {
-//     console.error("Error in filling orders");
-//   }
-// }; why not work??
+
 export const totalQuantityOrder = (state) => {
   return state.order.orderData.reduce((sum, order) => {
     if (order.is_paid === 0 && order.is_delivered === 0) {

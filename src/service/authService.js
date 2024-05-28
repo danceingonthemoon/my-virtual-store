@@ -74,6 +74,7 @@ export const updateUserProfile = async ({ name, password }) => {
       },
       body: JSON.stringify(user),
     });
+    // console.log("response", response);
     if (!response.ok) {
       const errorMessage = await response.text();
       Alert.alert("Error in updateUserProfile:", errorMessage);

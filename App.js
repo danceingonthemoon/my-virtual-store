@@ -16,9 +16,14 @@ import { SignIn } from "./src/screens/SignIn";
 import { SignUp } from "./src/screens/SignUp";
 import { MyOrders } from "./src/screens/MyOrders";
 import { Platform, Alert } from "react-native";
-// import { isAuthenticated as checkAuthenticated } from "./src/service/authStorage";
 import { useEffect, useState } from "react";
-
+import { selectUserDetails, userID } from "./src/stores/userSlice";
+import { LogBox } from "react-native";
+// disable the warning message that appears when using nested VirtualizedLists
+// this is a known issue with React Native and is not a problem with our code
+LogBox.ignoreLogs([
+  "Donot show me warning.", // Ignore log warning
+]);
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -46,7 +51,7 @@ const HomeStack = () => (
 
 const UserProfileStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen
         name="SignIn"
         component={SignIn}
@@ -64,6 +69,22 @@ const UserProfileStack = () => {
 const MyTab = () => {
   const totalQuantityValue = useSelector(totalQuantity);
   const totalOrderQuantity = useSelector(totalQuantityOrder);
+  const uID = useSelector((state) =>
+    state.user.userDetails ? state.user.userDetails.id : null
+  );
+  const authCheck = (name, { navigation }) => ({
+    tabPress: (e) => {
+      e.preventDefault();
+      if (uID) {
+        navigation.navigate(name);
+      } else {
+        Alert.alert(
+          "Not allowed to log in",
+          "You must log in firstly to view the items"
+        );
+      }
+    },
+  });
   return (
     <Tab.Navigator>
       <Tab.Screen
@@ -76,6 +97,17 @@ const MyTab = () => {
             <Ionicons name="home" size={size} color={color} />
           ),
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (!uID) {
+              e.preventDefault(); // Prevent default action
+              Alert.alert(
+                "Access Denied",
+                "Please log in to access this page."
+              );
+            }
+          },
+        })}
       />
 
       <Tab.Screen
@@ -89,6 +121,17 @@ const MyTab = () => {
           ),
           tabBarBadge: totalQuantityValue ? totalQuantityValue : null,
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (!uID) {
+              e.preventDefault(); // Prevent default action
+              Alert.alert(
+                "Access Denied",
+                "Please log in to access this page."
+              );
+            }
+          },
+        })}
       />
       <Tab.Screen
         name="MyOrders"
@@ -101,6 +144,17 @@ const MyTab = () => {
           ),
           tabBarBadge: totalOrderQuantity ? totalOrderQuantity : null,
         }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            if (!uID) {
+              e.preventDefault(); // Prevent default action
+              Alert.alert(
+                "Access Denied",
+                "Please log in to access this page."
+              );
+            }
+          },
+        })}
       />
       <Tab.Screen
         name="UserProfile"

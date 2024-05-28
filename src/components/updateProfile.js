@@ -7,52 +7,46 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 // import axios from "./axiosConfig";
 import { Ionicons } from "@expo/vector-icons";
 import { updateUserProfile } from "../service/authService";
 import { selectUserDetails, updateUserToken } from "../stores/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { retrieveToken } from "../service/tokenStorage";
+import { updateUserDetails } from "../stores/userSlice";
 const UpdateProfile = ({ onCancelUpdate }) => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector(selectUserDetails);
-  // console.log("User in UpdateProfile:", user);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-
   const handleNameChange = (value) => {
     setName(value);
   };
-
   const handlePasswordChange = (value) => {
     setPassword(value);
   };
-
   const handleUpdateProfile = async () => {
     if (!name || !password) {
-      Alert.alert("Name and password are required");
+      Alert.alert("Error", "Name and password are required");
       return;
     }
     try {
       const token = await retrieveToken();
-      console.log("token", token); // Ensure the token retrieval is handled correctly
-      const response = await updateUserProfile({
-        name,
-        password,
-        token: token,
-      });
+      const response = await updateUserProfile({ name, password, token });
       const responseData = await response.json();
+      // console.log("responseData", responseData);
       if (responseData.status === "error") {
         Alert.alert("Update Failed", responseData.message);
       } else {
-        dispatch(updateUserToken(responseData));
-        Alert.alert("Profile updated successfully");
+        dispatch(updateUserDetails(responseData));
+        Alert.alert("Success", "Profile updated successfully");
       }
     } catch (error) {
-      Alert.alert("Error in request:", error.message);
+      Alert.alert("Error", error.message);
     }
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Update Profile</Text>

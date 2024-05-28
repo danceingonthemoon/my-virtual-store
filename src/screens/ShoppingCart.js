@@ -8,6 +8,7 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
@@ -24,10 +25,12 @@ import { postCartServer } from "../service/cartService";
 import { MyOrders } from "./MyOrders";
 import { postNewOrder } from "../service/orderService";
 import { fetchOrders } from "../stores/orderSlice";
+
 export const ShoppingCart = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const cartItems = useSelector(cartDetails);
+  // console.log("cart items", cartItems);
   const [isLoading, setIsLoading] = useState(true);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -36,29 +39,6 @@ export const ShoppingCart = () => {
     setIsLoading(false);
     calculateTotalItemsAndPrice();
   }, [cartItems]);
-
-  useEffect(() => {
-    sendCartItemsToServer();
-  }, [cartItems]);
-
-  const sendCartItemsToServer = async () => {
-    try {
-      const items = cartItems.map((item) => {
-        return {
-          id: item.id,
-          price: item.price,
-          quantity: item.quantity,
-          image: item.image,
-          description: item.description,
-          title: item.title,
-        };
-      });
-      const response = await postCartServer({ items: items });
-      return response;
-    } catch (error) {
-      Alert.alert("Error", "Failed to add items to cart.");
-    }
-  };
 
   const handleIncreaseQuantity = (id) => {
     dispatch(increaseQuantity(id));
@@ -80,25 +60,35 @@ export const ShoppingCart = () => {
     setTotalItems(itemsCount);
     setTotalPrice(totalPrice);
   };
+
   const handleCheckOut = async () => {
-    const items = cartItems.map((item) => ({
-      prodID: item.id,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image,
-      description: item.description,
-      title: item.title,
-    }));
     try {
-      const data = await postNewOrder({ items });
-      Alert.alert("Success", "Order placed successfully!");
-      dispatch(fetchOrders());
-      dispatch(clearCartData());
-      navigation.navigate("MyOrders");
+      const response = await postNewOrder(cartItems);
+      console.log("cart Items after checkout :", cartItems);
+      if (response.status === "OK") {
+        dispatch({
+          type: "cart/saveCartToServer",
+          async: true,
+          payload: cartItems,
+        });
+        dispatch(clearCartData());
+        dispatch(fetchOrders());
+        navigation.navigate("MyOrders");
+        Alert.alert(
+          "Checkout Successful",
+          "Your order has been placed successfully!"
+        );
+      } else {
+        throw new Error("Failed to place the order");
+      }
     } catch (error) {
-      Alert.alert("Error", error.message || "Failed to place the order");
+      Alert.alert(
+        "Error",
+        error.message || "Failed to complete the checkout process"
+      );
     }
   };
+
   const renderItem = ({ item }) => (
     <View style={styles.product}>
       <Image source={{ uri: item.image }} style={styles.image} />
@@ -126,7 +116,7 @@ export const ShoppingCart = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.heading}>Shopping Cart</Text>
       <View style={styles.products}>
         {cartItems.length === 0 ? (
@@ -158,7 +148,7 @@ export const ShoppingCart = () => {
               keyExtractor={(item, index) =>
                 item.id ? item.id.toString() : index.toString()
               }
-              contentContainerStyle={styles.cartItemsContainer}
+              contentContainerStyle={styles.products}
             />
             <View style={styles.buttonBox2}>
               <View style={styles.iconBox}>
@@ -182,55 +172,57 @@ export const ShoppingCart = () => {
           </>
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
     justifyContent: "center",
     margin: 4,
     padding: 5,
     backgroundColor: "lightgreen",
-    width: "100%",
+    width: "99%",
+    height: "99%",
     borderRadius: 10,
-    marginTop: 20,
+    // marginTop: 20,
   },
   heading: {
     fontSize: 32,
     fontWeight: "bold",
-    width: "100%",
-    height: "5%",
+    width: "99%",
+    height: "6%",
     backgroundColor: "purple",
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
     fontWeight: "bold",
     marginTop: 20,
+    marginRight: 5,
+    marginLeft: 5,
     color: "white",
     borderRadius: 10,
   },
-  // cart: {
-  //   // flex: 1,
-  //   marginBottom: 10,
-  //   width: "100%",
-  //   height: "96%",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   textAlign: "center",
-  //   borderRadius: 20,
-  // },
-  products: {
-    marginTop: 10,
+  cart: {
+    marginBottom: 10,
     width: "100%",
-    flexGrow: 1,
+    height: "96%",
+    justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
+    borderRadius: 20,
+  },
+  products: {
+    margin: 10,
+    width: "98%",
+    flexGrow: 1,
+    // alignItems: "center",
     // justifyContent: "center",
   },
   product: {
-    flexGrow: 1,
+    // flexGrow: 1,
     width: "99%",
     borderWidth: 1,
     padding: 10,
@@ -308,5 +300,6 @@ const styles = StyleSheet.create({
   },
   cartItemsContainer: {
     width: "100%",
+    // flexGrow: 1,
   },
 });

@@ -10,7 +10,6 @@ import { useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { SignIn } from "./SignIn";
 import { signUp } from "../service/authService";
 import { useSelector } from "react-redux";
 import { selectUserDetails, setUserDetails } from "../stores/userSlice";

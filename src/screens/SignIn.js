@@ -21,18 +21,17 @@ import {
   clearUserDetails,
 } from "../stores/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCart } from "../stores/cartSlice";
-import {
-  fetchOrders,
-  fillOrders,
-  // fillOrdersFromFetch,
-} from "../stores/orderSlice";
+import { fetchCart, cartDetails } from "../stores/cartSlice";
+import { fetchOrders } from "../stores/orderSlice";
 
 const SignIn = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUserDetails);
+  // console.log("user", user);
+  const cartData = useSelector(cartDetails);
+  // only log when `user` changes
   const [email, setEmail] = useState("tomL2024@gmail.com");
-  const [password, setPassword] = useState("Hillo123");
+  const [password, setPassword] = useState("Abdjfk34");
   const navigation = useNavigation();
   const handleEmailChange = (email) => {
     setEmail(email);
@@ -40,23 +39,16 @@ const SignIn = () => {
   const handlePasswordChange = (password) => {
     setPassword(password);
   };
-  // const restoreOrders = async ({ token }) => {
-  //   dispatch(fillOrdersFromFetch(token));
-  //   // const data = fetchOrders({ items: data.items });
-  //   // if (data.status === "OK") {
-  //   //   dispatch(fillOrders({ items: data.orders }));
-  //   // } else {
-  //   //   Alert.alert("Failed to restore orders:" + data.message);
-  //   // }
-  // };
   const handleSignIn = async ({ email, password }) => {
+    if (!email || !password) {
+      Alert.alert("Email and password must not be empty.");
+    }
     try {
       const user = { email, password };
       const userData = await signIn(user);
       dispatch(setUserDetails(userData));
-      dispatch(fetchCart());
+      dispatch(fetchCart(cartData));
       dispatch(fetchOrders());
-      // await restoreOrders();
     } catch (error) {
       Alert.alert("Error,", error.message);
     }

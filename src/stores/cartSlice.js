@@ -14,27 +14,23 @@ const findProductIndex = (cartData, id) => {
 
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
-  async (_, { getState, rejectWithValue }) => {
-    const { user } = getState();
+  async (_, { rejectWithValue }) => {
     const token = await retrieveToken();
-    if (!user.userDetails || !user.userDetails.token) {
-      return rejectWithValue("User is not logged in or token is missing.");
-    }
     try {
       const response = await fetch("http://localhost:3000/cart", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${user.userDetails.token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
-
+      // console.log("response", response);
       if (!response.ok) {
         throw new Error("Failed to fetch cart");
       }
       const data = await response.json();
-      // console.log("data", data);
-      return data;
+      // console.log("data items", data.items);
+      return data.items;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -78,6 +74,7 @@ const cartSlice = createSlice({
       });
     },
     clearCartData: (state, action) => {
+      // console.log("state of cartData", state.cartData);
       state.cartData = [];
       state.totalQuantity = 0;
       // state.error = null;
@@ -91,10 +88,10 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         // console.log("action.payload", action.payload);
-        if (action.payload.items) {
+        if (action.payload) {
           // Assuming items are nested under 'items' key
-          state.cartData = action.payload.items;
-          state.totalQuantity = action.payload.items.reduce(
+          state.cartData = action.payload;
+          state.totalQuantity = action.payload.reduce(
             (total, item) => total + item.quantity,
             0
           );

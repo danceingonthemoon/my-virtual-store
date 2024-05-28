@@ -135,7 +135,7 @@ export const MyOrders = () => {
                 <Text style={styles.payButtonText}>Pay Now</Text>
               </TouchableOpacity>
             )}
-            {item.is_paid && !item.is_delivered && (
+            {!!item.is_paid && !item.is_delivered && (
               <TouchableOpacity
                 style={styles.payButton}
                 onPress={() => handleDeliver(item.id)} // Button to trigger payment
