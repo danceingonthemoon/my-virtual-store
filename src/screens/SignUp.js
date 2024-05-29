@@ -11,9 +11,10 @@ import { TextInput } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { signUp } from "../service/authService";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectUserDetails, setUserDetails } from "../stores/userSlice";
 const SignUp = () => {
+  const dispatch = useDispatch();
   const [name, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,8 +33,8 @@ const SignUp = () => {
     try {
       const user = { name, email, password };
       const response = await signUp(user);
-      // console.log("Sign-Up successful :", response);
-      if (response.success) {
+      console.log("Sign-Up successful :", response);
+      if (response.status === "OK") {
         dispatch(setUserDetails(response.data));
       } else {
         alert(response.error); // Show error message

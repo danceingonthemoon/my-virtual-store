@@ -20,14 +20,15 @@ export const signUp = async ({ name, email, password }) => {
     }
   }
 };
-
+export const SERVER_URL =
+  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000";
 export const signIn = async ({ email, password }) => {
   const user = { email, password };
   if (!email || !password) {
     Alert.alert("Email and password are required");
   }
   try {
-    const response = await fetch("http://localhost:3000/users/signin", {
+    const response = await fetch(`${SERVER_URL}/users/signin`, {
       method: "POST",
       mode: "cors",
       headers: {
@@ -41,10 +42,10 @@ export const signIn = async ({ email, password }) => {
     const data = await response.json();
     if (data.token) {
       await storeToken(data.token);
+      return data;
     } else {
       throw new Error("No token recieved");
     }
-    return data;
   } catch (error) {
     if (error.response) {
       console.error("Server Error:", error.response.data);

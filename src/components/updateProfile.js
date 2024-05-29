@@ -34,14 +34,16 @@ const UpdateProfile = ({ onCancelUpdate }) => {
     }
     try {
       const token = await retrieveToken();
+      console.log("token", token);
       const response = await updateUserProfile({ name, password, token });
       const responseData = await response.json();
-      // console.log("responseData", responseData);
-      if (responseData.status === "error") {
-        Alert.alert("Update Failed", responseData.message);
-      } else {
-        dispatch(updateUserDetails(responseData));
+      console.log("responseData", responseData);
+      if (responseData.status === "OK") {
         Alert.alert("Success", "Profile updated successfully");
+        dispatch(updateUserDetails(responseData));
+        return;
+      } else {
+        Alert.alert("Update Failed", responseData.message);
       }
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -70,10 +72,7 @@ const UpdateProfile = ({ onCancelUpdate }) => {
         />
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleUpdateProfile()}
-        >
+        <TouchableOpacity style={styles.button} onPress={handleUpdateProfile}>
           <Ionicons name="checkmark" size={22} color="white" />
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
