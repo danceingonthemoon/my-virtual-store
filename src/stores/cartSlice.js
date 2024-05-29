@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { retrieveToken } from "../service/tokenStorage";
-
+import { Platform } from "react-native";
+export const SERVER_URL =
+  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000";
 const initialState = {
   cartData: [],
   loading: false,
@@ -17,7 +19,7 @@ export const fetchCart = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const token = await retrieveToken();
     try {
-      const response = await fetch("http://localhost:3000/cart", {
+      const response = await fetch(`${SERVER_URL}/cart`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

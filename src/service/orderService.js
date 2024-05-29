@@ -1,19 +1,21 @@
 import { Alert } from "react-native";
 import { retrieveToken } from "./tokenStorage";
-
+import { Platform } from "react-native";
+export const SERVER_URL =
+  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000";
 //post new order to /orders/neworder
 export const postNewOrder = async (items) => {
   const token = await retrieveToken();
   const { prodID, price, quantity } = items;
   try {
-    const response = await fetch("http://localhost:3000/orders/neworder", {
+    const response = await fetch(`${SERVER_URL}/orders/neworder`, {
       method: "POST",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ items: items }),
+      body: JSON.stringify({ items: items, token }),
     });
     console.log("response", response);
     if (!response.status === 200) {
@@ -38,14 +40,14 @@ export const updateOrder = async (orderID, isPaid, isDelivered) => {
   };
   console.log("orders to update", orderUpdateInfo);
   try {
-    const response = await fetch("http://localhost:3000/orders/updateorder", {
+    const response = await fetch(`${SERVER_URL}/orders/updateorder`, {
       method: "POST",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(orderUpdateInfo),
+      body: JSON.stringify(orderUpdateInfo, token),
     });
     const data = await response.json();
     if (!response.status === 200) {

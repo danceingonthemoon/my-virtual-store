@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { signUp } from "../service/authService";
 import { useSelector, useDispatch } from "react-redux";
+import { Alert } from "react-native";
 import { selectUserDetails, setUserDetails } from "../stores/userSlice";
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -35,9 +36,10 @@ const SignUp = () => {
       const response = await signUp(user);
       console.log("Sign-Up successful :", response);
       if (response.status === "OK") {
-        dispatch(setUserDetails(response.data));
+        dispatch(setUserDetails(response));
+        Alert.alert(`You have signed up successfully. ${user.name}`);
       } else {
-        alert(response.error); // Show error message
+        Alert.alert(response.error); 
       }
     } catch (error) {
       console.error("Error in Sign-Up:", error.message);

@@ -2,6 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { retrieveToken } from "../service/tokenStorage";
 import { postNewOrder } from "../service/orderService";
 import { updateOrder } from "../service/orderService";
+import { Platform } from "react-native";
+
+export const SERVER_URL =
+  Platform.OS === "android" ? "http://10.0.2.2:3000" : "http://localhost:3000";
 const initialState = {
   orderData: [],
   loading: false,
@@ -14,7 +18,7 @@ export const fetchOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const token = await retrieveToken();
     try {
-      const response = await fetch("http://localhost:3000/orders/all", {
+      const response = await fetch(`${SERVER_URL}/orders/all`, {
         method: "GET",
         mode: "cors",
         headers: {

@@ -20,7 +20,7 @@ const UserProfile = ({ user }) => {
     setShowUpdateForm(false);
   };
   useEffect(() => {
-    console.log("user", user);
+    console.log("user changes", user);
   }, [user]); // only log when `user` changes
 
   const handleSignOut = async () => {
@@ -30,7 +30,7 @@ const UserProfile = ({ user }) => {
       async: true,
       payload: cartItems,
     });
-    console.log("cart items after sign out :", cartItems);
+    // console.log("cart items after sign out :", cartItems);
     dispatch(clearOrders());
     dispatch(clearUserDetails());
     navigation.navigate("SignIn");
