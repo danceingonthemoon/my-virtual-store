@@ -34,9 +34,9 @@ const UpdateProfile = ({ onCancelUpdate }) => {
     }
     try {
       const token = await retrieveToken();
-      console.log("token", token);
+      // console.log("token", token);
       const response = await updateUserProfile({ name, password });
-      console.log("response from updates", response);
+      // console.log("response from updates", response);
       // const responseData = await response.json();
       // console.log("responseData", responseData);
       if (response.status === "OK") {

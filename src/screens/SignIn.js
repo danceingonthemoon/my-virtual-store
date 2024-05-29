@@ -31,7 +31,7 @@ const SignIn = () => {
   const cartData = useSelector(cartDetails);
   // only log when `user` changes
   const [email, setEmail] = useState("tomL2024@gmail.com");
-  const [password, setPassword] = useState("Helofa45");
+  const [password, setPassword] = useState("ExisfeI4");
   const navigation = useNavigation();
   const handleEmailChange = (email) => {
     setEmail(email);
